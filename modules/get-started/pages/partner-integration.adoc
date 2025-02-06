@@ -10,6 +10,7 @@ Learn about Redpanda integrations built and supported by our partners.
 |===
 |*Partner* |*Description* |*More information*
 
+| https://superstream.ai/[Superstream^] |Superstream optimizes and improves Redpanda (and other Kafka types) for cost reduction, increased reliability, and improved visibility. | https://docs.superstream.ai/solution-briefs/superstream-for-redpanda[Superstream for Redpanda]
 | https://www.aklivity.io/[Aklivity Zilla^] |Zilla is a multi-protocol proxy that abstracts Redpanda for non-native clients, such as browsers and IoT devices, by exposing Redpanda topics using user-defined REST, Server-Sent Events (SSE), MQTT, or gRPC API entry points.  | https://www.aklivity.io/post/modern-eventing-with-cqrs-redpanda-and-zilla[Modern Eventing with CQRS, Redpanda and Zilla^]
 | https://bytewax.io/[Bytewax^] |Bytewax is an open source framework and distributed stream processing engine in Python.  | https://bytewax.io/guides/enriching-streaming-data[Enriching streaming data with Bytewax and Redpanda^]
 | https://clickhouse.com/[ClickHouse^] |ClickHouse is a high-performance, column-oriented SQL database management system (DBMS) for online analytical processing (OLAP). | https://redpanda.com/blog/real-time-olap-database-clickhouse-redpanda[Building an OLAP database with ClickHouse and Redpanda^]
