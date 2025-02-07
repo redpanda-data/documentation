@@ -26,6 +26,8 @@ Compaction policy may be applied to a cluster or to an individual topic. If both
 * `compact`: This triggers only cleanup of records with multiple versions. A record that represents the only version for a given key is not deleted.
 * `compact,delete`: This combines both policies, deleting records exceeding the retention period while compacting multiple versions of records.
 
+include::develop:partial$cleanup-policy-warning.adoc[]
+
 == Tombstone record removal
 
 Compaction also enables deletion of existing records through tombstones. For example, as data is deleted from a source system, clients produce a tombstone record to the log. A tombstone contains a key and the value `null`. Tombstones signal to brokers and consumers that records with the same key prior to it in the log should be deleted. 

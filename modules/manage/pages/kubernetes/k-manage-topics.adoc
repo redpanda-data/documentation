@@ -126,6 +126,8 @@ The cleanup policy determines how to manage the partition log files when they re
 
 If the cleanup policy is `delete` or `compact,delete` you can <<Delete records from a topic>>.
 
+include::develop:partial$cleanup-policy-warning.adoc[]
+
 === Configure Iceberg topics
 
 Iceberg topics allow you to create a seamless integration with Apache Iceberg by writing records in Redpanda topics to object storage in Iceberg format.

@@ -99,6 +99,8 @@ The cleanup policy determines how to clean up the partition log files when they 
 
 Unlike compacted topics, which keep only the most recent message for a given key, topics configured with a `delete` cleanup policy provide a running history of all changes for those topics.
 
+include::develop:partial$cleanup-policy-warning.adoc[]
+
 For example, to change a topic's policy to `compact`, run:
 
 [,bash]

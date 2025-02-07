@@ -171,6 +171,8 @@ The cleanup policy to apply for log segments of a topic.
 
 When `cleanup.policy` is set, it overrides the cluster property xref:cluster-properties.adoc#log_cleanup_policy[`log_cleanup_policy`] for the topic.
 
+include::develop:partial$cleanup-policy-warning.adoc[]
+
 **Default**: `[delete]`
 
 **Values**:
@@ -178,6 +180,8 @@ When `cleanup.policy` is set, it overrides the cluster property xref:cluster-pro
 - `[delete]` - Deletes data according to size-based or time-based retention limits, or both.
 - `[compact]` - Deletes data according to a key-based retention policy, discarding all but the latest value for each key.
 - `[compact,delete]` - The latest values are kept for each key, while the remaining data is deleted according to retention limits.
+
+
 
 **Related topics**:
 
