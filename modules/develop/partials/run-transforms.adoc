@@ -50,7 +50,7 @@ endif::[]
 ifdef::env-kubernetes[]
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

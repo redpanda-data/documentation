@@ -337,7 +337,7 @@ When scaling in (removing brokers), remove only one broker at a time. If you red
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -451,7 +451,7 @@ NOTE: Always decommission one broker at a time.
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 
@@ -608,7 +608,7 @@ When scaling in (removing brokers), remove only one broker at a time. If you red
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

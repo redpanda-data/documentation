@@ -260,7 +260,7 @@ ifndef::env-cloud[]
 
 | Operator v2.2.3-24.2.X
 | Migration path from the deprecated Cluster and Console custom resources.
-|The deprecated Cluster and Console custom resources are no longer migrated to the new Flux-based version.
+|The deprecated Cluster and Console custom resources are no longer migrated to the latest version.
 |===
 endif::[]
 

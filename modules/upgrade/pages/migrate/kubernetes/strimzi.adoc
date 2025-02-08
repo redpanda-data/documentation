@@ -19,11 +19,7 @@ Both Strimzi and the Redpanda Operator harness the power of Kubernetes to provid
 
 - Strimzi is an open-source project that simplifies the deployment and management of _Apache Kafka_ clusters on Kubernetes.
 
-- The Redpanda Operator simplifies the deployment and management of _Redpanda_ clusters on Kubernetes.
-
-The Redpanda Operator uses https://fluxcd.io/flux/concepts/[Flux^] to automate the deployment of the Redpanda Helm chart through the HelmRelease resource. For more details, see xref:deploy:deployment-option/self-hosted/kubernetes/k-deployment-overview.adoc[].
-
-image::shared:operator-flux-relationship.png[CRDs for the Redpanda Operator include Flux CRDs. Flux manages the Redpanda Helm chart through the HelmRelease resource.]
+- xref:deploy:deployment-option/self-hosted/kubernetes/k-deployment-overview.adoc[The Redpanda Operator] simplifies the deployment and management of _Redpanda_ clusters on Kubernetes using custom resource definitions (CRDs).
 
 == Notable differences
 
@@ -31,7 +27,7 @@ These are some notable differences between features and functionality in Strimzi
 
 === Security
 
-The Redpanda Helm chart emphasizes security out of the box, with the following defaults:
+The Redpanda CRD, which defines Redpanda clusters, emphasizes security out of the box, with the following defaults:
 
 - TLS enabled for the Kafka API, HTTP Proxy, and inter-broker communication (RPC).
 - Certificate management through glossterm:cert-manager[] by default.
@@ -60,12 +56,12 @@ Redpanda manages partition distribution and load balancing, eliminating the need
 
 === Networking
 
-The Redpanda Helm chart has built-in support for the following networking options:
+The Redpanda CRD has built-in support for the following networking options:
 
 * *NodePort* for direct access to services from outside the cluster using ports on each node.
 * *Load Balancer* for distributing external traffic to the cluster nodes, typically managed by cloud providers.
 
-NOTE: Ingress and route configurations are not available in the Redpanda Helm chart. To use these Services, you can disable the default NodePort Service and deploy your own custom Service.
+NOTE: Ingress and route configurations are not available in the Redpanda CRD. To use these Services, you can disable the default NodePort Service and deploy your own custom Service.
 
 See xref:manage:kubernetes/networking/index.adoc[].
 
@@ -303,6 +299,8 @@ The Redpanda Operator does not support a custom resource for Kafka users. For de
 The Redpanda Operator does not support a custom resource to define Kafka Connect deployments. Redpanda provides support for Kafka Connect through a separate Connectors Helm chart.
 
 See xref:deploy:deployment-option/self-hosted/kubernetes/k-deploy-connectors.adoc[].
+
+TIP: You can also use the xref:redpanda-connect:get-started:quickstarts/helm-chart.adoc[Redpanda Connect Helm chart], which comes with hundreds of prebuilt connectors, change data capture (CDC) capabilities, and YAML-configurable workflows.
 
 [[migrate-kafkabridge]]
 ==== Migrate the KafkaBridge resource

@@ -1,0 +1,3 @@
+= What's New
+:description: Summary of new features and updates.
+:page-layout: index

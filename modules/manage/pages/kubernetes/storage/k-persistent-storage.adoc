@@ -25,7 +25,7 @@ Both the Redpanda Helm chart and the Redpanda custom resource provide an interfa
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

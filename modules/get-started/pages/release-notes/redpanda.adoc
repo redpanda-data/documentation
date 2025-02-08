@@ -1,6 +1,6 @@
-= What's New
-:description: Summary of new features and updates in the release.
-:page-aliases: get-started:whats-new-233.adoc, get-started:whats-new-241.adoc
+= What's New in Redpanda
+:description: Summary of new features and updates in this Redpanda release.
+:page-aliases: get-started:whats-new-233.adoc, get-started:whats-new-241.adoc, get-started:whats-new.adoc
 
 This topic includes new content added in version {page-component-version}. For a complete list of all product updates, see the https://github.com/redpanda-data/redpanda/releases/[Redpanda release notes^]. See also:
 
@@ -61,47 +61,7 @@ For more details, see xref:manage:security/encryption.adoc[].
 
 This feature is not yet available in Kubernetes deployments that use the Redpanda Helm chart or the Redpanda Operator.
 
-== New features in the Redpanda Operator
-
-=== Declarative user and ACL management
-
-The Redpanda Operator now supports declarative management of users and access control lists (ACLs) using the new User custom resource, starting in version v2.2.2-24.2.4. This feature allows you to:
-
-- Create and manage Redpanda users and their authentication settings.
-- Define and manage ACLs to control access to Redpanda resources.
-- Automatically reconcile changes to users and ACLs using the Redpanda Operator.
-
-To learn more, see the xref:manage:kubernetes/security/authentication/k-user-controller.adoc[User custom resource documentation].
-
-=== Declarative schema management
-
-The Redpanda Operator now supports declarative schema management using the Schema custom resource, starting in version v2.3.0-24.3.1. This feature allows you to:
-
-- Define, create, and manage Avro, Protobuf, and JSON schemas declaratively.
-- Enforce schema compatibility and evolution policies directly in Kubernetes.
-- Automate schema lifecycle management alongside Redpanda deployments.
-
-To learn more, see the xref:manage:kubernetes/k-schema-controller.adoc[Schema custom resource documentation].
-
-=== Use Redpanda Operator without Flux (beta)
-
-The Redpanda Operator now supports the `useFlux` flag, giving you control over resource management, starting in version v2.3.0-24.3.1:
-
-- `useFlux: true` (default): Delegates Redpanda resource management to Flux controllers through HelmRelease resources.
-- `useFlux: false`: Directly manages resources within the Redpanda Operator, bypassing Flux.
-+
-IMPORTANT: The `useFlux:false` configuration is in beta. It is not supported for production deployments. Beta features are available for users to test and https://redpandacommunity.slack.com/[provide feedback^].
-
-Example:
-
-[,yaml]
-----
-spec:
-  clusterSpec:
-    useFlux: false
-----
-
-== New commands
+== New `rpk` commands
 
 The following `rpk` commands are new in this version:
 

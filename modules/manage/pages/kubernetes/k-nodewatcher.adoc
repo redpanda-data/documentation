@@ -45,7 +45,7 @@ flowchart TB
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 

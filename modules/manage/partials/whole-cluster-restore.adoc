@@ -90,7 +90,7 @@ Deploy the target Redpanda cluster.
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

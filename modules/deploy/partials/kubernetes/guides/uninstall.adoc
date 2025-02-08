@@ -4,7 +4,7 @@ When you've finished testing Redpanda, you can uninstall it from your cluster an
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 [,bash]

@@ -13,7 +13,7 @@ alias internal-rpk="kubectl --namespace <namespace> exec -i -t redpanda-0 -c red
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 

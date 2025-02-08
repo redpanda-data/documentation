@@ -103,7 +103,7 @@ Configure any additional Helm values that you want to override in the `clusterSp
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -181,7 +181,7 @@ See <<Configuration advice>> for details.
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

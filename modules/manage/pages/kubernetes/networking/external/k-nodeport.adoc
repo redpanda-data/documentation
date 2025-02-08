@@ -58,7 +58,7 @@ Replace `<custom-domain>` with your domain.
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -132,7 +132,7 @@ Replace `<custom-domain>` with your domain, and replace `<custom-hostname>` with
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -206,7 +206,7 @@ Replace `<custom-domain>` with your domain, and replace the placeholders in the 
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -340,7 +340,7 @@ TIP: The `txtOwnerId` and `interval` flags are recommended. The `txtOwnerId` fla
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -419,7 +419,7 @@ While adding entries to the `/etc/hosts` file may work for development purposes,
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -498,7 +498,7 @@ kubectl get node -o wide
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

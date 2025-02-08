@@ -52,7 +52,7 @@ Replace `<custom-domain>` with your domain.
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -126,7 +126,7 @@ Replace `<custom-domain>` with your domain, and replace `<custom-hostname>` with
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -201,7 +201,7 @@ Replace `<custom-domain>` with your domain, and replace the placeholders in the 
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -322,7 +322,7 @@ TIP: The `txtOwnerId` and `interval` flags are recommended. The `txtOwnerId` fla
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -401,7 +401,7 @@ If you're hosting Redpanda on a managed Kubernetes platform, follow the <<Manage
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -483,7 +483,7 @@ lb-redpanda-2      LoadBalancer   10.100.231.13    loadbalancer3.com
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -541,7 +541,7 @@ rpk cluster info -X brokers=<load-balancer-address>:31092
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -624,7 +624,7 @@ lb-redpanda-2      LoadBalancer   10.96.203.230   <pending>     31644:32025/TCP,
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

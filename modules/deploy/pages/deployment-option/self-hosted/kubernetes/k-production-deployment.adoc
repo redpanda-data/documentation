@@ -26,7 +26,7 @@ TIP: For more details about the differences between these two methods, see xref:
 
 [tabs]
 ====
-Helm + Operator::
+Operator::
 +
 --
 
@@ -276,7 +276,7 @@ You can deploy more than one Redpanda cluster in the same Kubernetes cluster by 
 
 [tabs]
 ====
-Helm + Operator::
+Operator::
 +
 --
 
@@ -370,7 +370,7 @@ To avoid unexpected changes to your deployments, pin the version of the Helm cha
 
 [tabs]
 ====
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

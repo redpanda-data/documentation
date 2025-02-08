@@ -24,7 +24,7 @@ To store the Redpanda data directory in `emptyDir` volumes:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

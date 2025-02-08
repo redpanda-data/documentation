@@ -4,7 +4,7 @@ In this step, you deploy Redpanda with SASL authentication and self-signed TLS c
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 
@@ -47,8 +47,6 @@ helm upgrade --install redpanda-controller redpanda/operator \
   --create-namespace \
   --timeout 1h
 ----
-+
-NOTE: If you already have Flux installed and you want it to continue managing resources across the entire cluster, use the `--set additionalCmdFlags="{--enable-helm-controllers=false}"` flag. This flag prevents the Redpanda Operator from deploying its own set of Helm controllers that may conflict with those installed with Flux.
 
 . Ensure that the Deployment is successfully rolled out:
 +

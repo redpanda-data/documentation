@@ -112,7 +112,7 @@ kubectl --namespace <namespace> create secret generic redpanda-superusers --from
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -190,7 +190,7 @@ If you leave this placeholder empty, the Helm chart uses the default authenticat
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -296,7 +296,7 @@ The xref:reference:k-redpanda-helm-spec.adoc#statefulset-sidecars-configwatcher-
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -780,7 +780,7 @@ ifdef::env-kubernetes[]
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1202,7 +1202,7 @@ To enable basic authentication for the Admin API:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1400,7 +1400,7 @@ To enable OIDC for the HTTP API listeners as well as basic authentication, inclu
 ifdef::env-kubernetes[]
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1585,7 +1585,7 @@ To disable authentication for a listener, set `authentication_method` to `none`:
 ifdef::env-kubernetes[]
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

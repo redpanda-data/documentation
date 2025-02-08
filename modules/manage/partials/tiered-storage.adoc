@@ -72,7 +72,7 @@ If you need to manage and store encryption keys separately from your cloud provi
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -173,7 +173,7 @@ data:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -273,7 +273,7 @@ Configure access to Google Cloud Storage with either an IAM role attached to the
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -374,7 +374,7 @@ data:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -479,7 +479,7 @@ include::manage:partial$azure-blob-limitations.adoc[]
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -594,7 +594,7 @@ data:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1183,7 +1183,7 @@ This StorageClass is marked as the default, which means that this class is used 
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1255,7 +1255,7 @@ helm upgrade --install redpanda redpanda/redpanda --namespace <namespace> --crea
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1337,7 +1337,7 @@ When you use a static provisioner, an existing PersistentVolume in the cluster i
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -1419,7 +1419,7 @@ include::manage:partial$kubernetes/init-container.adoc[]
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

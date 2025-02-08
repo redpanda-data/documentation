@@ -79,7 +79,7 @@ To set a truststore for a listener, you can use a Secret or a ConfigMap referenc
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

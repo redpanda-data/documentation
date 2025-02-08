@@ -36,7 +36,7 @@ This command creates a Kubernetes Secret named `redpanda-license` in the specifi
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -104,7 +104,7 @@ If you prefer to provide the license string directly, you can do so as follows:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -266,7 +266,7 @@ If you applied the license inline, follow these steps to update it:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

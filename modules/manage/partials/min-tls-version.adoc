@@ -7,7 +7,7 @@ You can update the minimum TLS version of your clusters to `v1.0`, `v1.1` or `v1
 ifdef::env-kubernetes[]
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

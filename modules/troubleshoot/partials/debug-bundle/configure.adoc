@@ -27,7 +27,7 @@ To set this property, use the `config.cluster.debug_bundle_auto_removal_seconds`
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -157,7 +157,7 @@ To set this property, use the `config.cluster.debug_bundle_storage_dir` field:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

@@ -21,7 +21,7 @@ NOTE: xref:reference:tunable-properties.adoc[Tunable properties], such as intern
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

@@ -146,7 +146,7 @@ To enable rack awareness in your Redpanda cluster, configure the cluster with th
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

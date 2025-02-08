@@ -47,25 +47,25 @@ The Redpanda Helm chart provides all the manifest files required to deploy Redpa
 [[helm-and-redpanda-operator]]
 === Redpanda Operator
 
-The Redpanda Operator provides two deployment modes controlled by the `useFlux` flag. The modes differ in how reconciliation is handled.
+The Redpanda Operator provides two deployment modes controlled by the `chartRef.useFlux` flag. The modes differ in how reconciliation is handled.
 
-IMPORTANT: The `useFlux: false` configuration is in beta. It is not supported for production deployments. Beta features are available for users to test and https://redpandacommunity.slack.com/[provide feedback^].
+==== Redpanda-managed mode
 
-- *Flux-managed mode (`useFlux: true`)*:
-When `useFlux` is set to `true` (default), the Redpanda Operator delegates reconciliation to https://fluxcd.io/flux/concepts/[Flux^] controllers. The workflow is as follows:
-+
-. The Redpanda Operator defines the necessary CRDs for Redpanda. A Redpanda resource represents a Redpanda cluster, configured through the Redpanda Helm chart values.
-. When the Redpanda Operator detects changes to Redpanda resources, it triggers Flux to reconcile the corresponding HelmRelease resource.
-. Flux uses the HelmRelease resource to manage the lifecycle of the Redpanda Helm chart, applying updates as needed.
+When `chartRef.useFlux` is set to `false` (default), the Redpanda Operator manages and reconciles Redpanda resources directly, without involving Flux. This mode works as follows:
 
-- *Redpanda-managed mode (`useFlux: false`)*:
-When `useFlux` is set to `false`, the Redpanda Operator manages and reconciles Redpanda resources directly, without involving Flux. This mode works as follows:
-+
 . The Redpanda Operator creates both `HelmRelease` and `HelmRepository` resources but suspends them, keeping Flux inactive.
 +
 NOTE: Although these resources are created in a suspended state, the operator still requires the Flux CRDs to be installed.
 . The operator directly reconciles Redpanda resources, performing tasks such as installations, updates, and cleanup, normally handled by Flux.
 . If `useFlux` is later re-enabled, the operator unsuspends the Flux resources, and Flux resumes lifecycle management.
+
+==== Flux-managed mode
+
+When `chartRef.useFlux` is set to `true`, the Redpanda Operator delegates reconciliation to https://fluxcd.io/flux/concepts/[Flux^] controllers. The workflow is as follows:
+
+. The Redpanda Operator defines the necessary CRDs for Redpanda. A Redpanda resource represents a Redpanda cluster, configured through the Redpanda Helm chart values.
+. When the Redpanda Operator detects changes to Redpanda resources, it triggers Flux to reconcile the corresponding HelmRelease resource.
+. Flux uses the HelmRelease resource to manage the lifecycle of the Redpanda Helm chart, applying updates as needed.
 
 Example configuration to specify the deployment mode in Redpanda's custom resource:
 
@@ -77,10 +77,10 @@ metadata:
   name: redpanda
 spec:
   chartRef:
-    useFlux: true  # or false, depending on your desired deployment mode
+    useFlux: false
 ----
 
-image::shared:operator-flux-relationship.png[CRDs for the Redpanda Operator include Flux CRDs. Flux manages the Redpanda Helm chart through the HelmRelease resource.]
+image::shared:operator-flux-relationship.png[CRDs for the Redpanda Operator include Flux CRDs. If you are running in Flux-managed mode, Flux manages the Redpanda Helm chart through the HelmRelease resource.]
 
 == Kubernetes deployment environments
 

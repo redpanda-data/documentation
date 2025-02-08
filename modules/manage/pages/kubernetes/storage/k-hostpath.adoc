@@ -28,7 +28,7 @@ To store Redpanda data in `hostPath` volumes:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

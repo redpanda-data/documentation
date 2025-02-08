@@ -111,7 +111,7 @@ Upgrading a Redpanda cluster in Kubernetes triggers a sequential restart of the 
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 
@@ -257,7 +257,7 @@ which means all Pods in the StatefulSet are restarted in reverse-ordinal order. 
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 Revert the change that you made to the version and reapply the manifest.

@@ -130,7 +130,7 @@ You can configure audit log settings in the Redpanda Helm chart, using Helm valu
 ifdef::env-kubernetes[]
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 If you want to manage the audit topic using a xref:manage:kubernetes/k-manage-topics.adoc[Topic resource]:

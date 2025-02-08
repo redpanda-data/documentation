@@ -33,7 +33,7 @@ For the Redpanda data directory:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -94,7 +94,7 @@ For the Tiered Storage cache:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

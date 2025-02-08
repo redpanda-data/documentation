@@ -64,7 +64,7 @@ kubectl exec redpanda-0 --namespace <namespace> -- rpk cluster health
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

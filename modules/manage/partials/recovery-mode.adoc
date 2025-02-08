@@ -57,7 +57,7 @@ When you enable recovery mode in the Redpanda Helm chart or Redpanda resource, t
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -166,7 +166,7 @@ Exit recovery mode by disabling it on all brokers:
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

@@ -87,7 +87,7 @@ NOTE: To set different log levels for individual subsystems, see <<Override the 
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 Apply the new log level:
@@ -168,7 +168,7 @@ kubectl exec -it --namespace <namespace> <pod-name> -c redpanda -- rpk redpanda 
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 Apply the new log level:
@@ -245,7 +245,7 @@ kubectl logs -l app.kubernetes.io/name=operator -c manager --namespace <namespac
 
 === Inspect Helm releases
 
-The Redpanda Operator uses Flux to deploy the Redpanda Helm chart. By inspecting the `helmreleases.helm.toolkit.fluxcd.io` resource, you can get detailed information about the Helm installation process for your Redpanda resource:
+If you are running the operator in *Flux-managed mode* (`chartRef.useFlux: true`), the Redpanda Operator uses Flux to deploy the Redpanda Helm chart. By inspecting the `helmreleases.helm.toolkit.fluxcd.io` resource, you can get detailed information about the Helm installation process for your Redpanda resource:
 
 [,bash]
 ----

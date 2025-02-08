@@ -56,7 +56,7 @@ The following steps explain how to set up self-signed certificates in your Redpa
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
@@ -228,7 +228,7 @@ Replace the following placeholders:
 +
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

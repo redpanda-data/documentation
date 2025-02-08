@@ -7,8 +7,6 @@ If you are using the Redpanda Helm chart, you can migrate to the Redpanda Operat
 
 The Redpanda Operator extends Kubernetes with custom resource definitions (CRDs), which allow Redpanda clusters to be treated as native Kubernetes resources. The primary resource that the Redpanda Operator uses to represent a Redpanda cluster is the Redpanda resource.
 
-When you define a Redpanda cluster using this Redpanda resource, the Redpanda Operator takes that configuration and passes it to https://fluxcd.io/flux/concepts/[Flux^]. Flux, in turn, interacts with Helm, creating the necessary HelmRepository and HelmRelease resources to deploy and manage the Redpanda Helm chart.
-
 Here is an example of a Redpanda custom resource:
 
 ```yaml
@@ -18,14 +16,32 @@ metadata:
   name: <cluster-name>
 spec:
   chartRef:
-    helmRepositoryName:
+    chartVersion:
   clusterSpec:
 ```
 
 - `metadata.name`: Name to assign the Redpanda cluster. This name is also assigned to the Helm release.
 - xref:reference:k-crd.adoc#chartref[`spec.chartRef`]: Information about the Helm chart that will be used to deploy Redpanda.
-- xref:reference:k-crd.adoc#helmrepositoryname[`spec.chartRef.helmRepositoryName`]: Name of the Helm repository where the Redpanda chart is located.
-- xref:reference:k-crd.adoc#redpandaclusterspec[`spec.clusterSpec`]: This is where you can override default values in the Redpanda Helm chart.
+- xref:reference:k-crd.adoc#chartversion[`spec.chartRef.chartversion`]: The version of the Helm chart values that the Redpanda CRD is compatible with.
+- xref:reference:k-crd.adoc#redpandaclusterspec[`spec.clusterSpec`]: This is where you can configure the Redpanda CRD with your values overrides from the Redpanda Helm chart.
+
+== Supported migration paths
+
+The following table summarizes which Helm chart versions you can migrate from and which Redpanda Operator versions to install.
+
+[cols="2m,2m,3a"]
+|===
+| Helm Chart Version | Operator Version | Notes
+
+| <5.9.x
+| -
+| You must first `helm upgrade` your Redpanda cluster to at least version 5.9.x before installing the Operator. Migrating directly from 5.8.x or below is not supported.
+
+| 5.9.x or 5.10.x
+| v2.4.x
+| After installing or upgrading to Helm chart 5.9.x or 5.10.x, you can install the Operator v2.4.x.
+
+|===
 
 == Prerequisites
 
@@ -37,12 +53,12 @@ Before migrating to the Redpanda Operator, you must have:
 helm list -A
 ```
 +
-In this example the chart version is 5.0.1 and the release name is `redpanda`.
+In this example the chart version is 5.9.1 and the release name is `redpanda`.
 +
 [.no-copy]
 ----
 NAME       CHART
-redpanda   redpanda-5.0.1
+redpanda   redpanda-5.9.1
 ----
 +
 Make a note of your name and version for the next steps. You'll need to configure your Redpanda custom resource with these details.
@@ -111,17 +127,25 @@ metadata:
   annotations:
     cluster.redpanda.com/managed: "true"
   creationTimestamp: null
-  name: <cluster-name>
+  name: <cluster-name> <1>
 spec:
   chartRef:
-    chartVersion: <chart-version>
+    chartVersion: <chart-version> <2>
   clusterSpec:
-    <chart-overrides>
+    <chart-overrides> <3>
 ----
 +
-NOTE: By selecting the correct chart version, you ensure control over your deployment. If you don't select a chart version, the operator may upgrade your chart, potentially causing unintended downtime.
+<1> Replace with your Helm release name.
+<2> Replace with your chart version.
 +
-TIP: The Redpanda Operator passes these values to the Redpanda Helm chart. The keys in the `clusterSpec` field are the same as those in the Redpanda Helm chart. For details on the structure and configuration options of the Redpanda custom resource, refer to the xref:reference:k-crd.adoc#redpandaclusterspec[Redpanda Operator CRD reference].
+[NOTE]
+====
+- Choose a `chartVersion` that the current Operator's CRDs support. For example, 5.9.x or 5.10.x if you're using Operator v2.4.x. See xref:upgrade:k-compatibility.adoc[].
+- If your existing Helm deployment is on version 5.8.x or below, you must first upgrade the chart using Helm before creating the Redpanda resource.
+====
+<3> Replace with your chart overrides.
++
+TIP: The Redpanda CRD is compatible with the version of the Helm chart defined in the operator. For details on the structure and configuration options of the Redpanda custom resource, refer to the xref:reference:k-crd.adoc#redpandaclusterspec[Redpanda Operator CRD reference].
 
 . Adopt the Redpanda cluster by creating an instance of the Redpanda custom resource in the same namespace as the Redpanda Operator:
 +
@@ -154,18 +178,6 @@ You can uninstall the Redpanda Operator using Helm or disable it by changing the
 ```bash
 kubectl edit pod <operator-name> --namespace <namespace>
 ```
-
-. Remove the https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/[finalizers^] from the Redpanda, HelmRelease, HelmChart, and HelmRepository resources:
-+
-[,bash]
-----
-kubectl --namespace <namespace> patch redpanda <cluster-name> -p '{"metadata":{"finalizers":null}}' --type=merge
-kubectl --namespace <namespace> patch helmrelease <cluster-name> -p '{"metadata":{"finalizers":null}}' --type=merge
-kubectl --namespace <namespace> patch helmchart <namespace>-<cluster-name> -p '{"metadata":{"finalizers":null}}' --type=merge
-kubectl --namespace <namespace> patch helmrepository <helm-repository-name> -p '{"metadata":{"finalizers":null}}' --type=merge
-----
-+
-Replace the `<helm-repository-name>` placeholder with the value of `spec.chartRef.helmRepositoryName` in your Redpanda resource. The default value is `redpanda-repository`.
 
 . Delete the resources:
 +

@@ -9,7 +9,7 @@ By default, the Helm chart deploys a NodePort Service to provide external access
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`

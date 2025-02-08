@@ -189,7 +189,7 @@ To enable write caching by default in all user topics, set the cluster-level pro
 
 [tabs]
 ======
-Helm + Operator::
+Operator::
 +
 --
 .`redpanda-cluster.yaml`
