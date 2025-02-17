@@ -10,47 +10,6 @@ components:
         - arn
       title: Security Group
       type: object
-    AWS.VPCEndpointConnection:
-      properties:
-        connection_id:
-          description: The connection ID of VPC endpoint connected to Redpanda AWS Private Link Endpoint Service.
-          example: vpce-con-00b9cba3360fe4aec
-          type: string
-        created_at:
-          description: Timestamp when was an VPC endpoint created.
-          format: date-time
-          type: string
-        dns_entries:
-          description: The list of DNS entries associated to VPC endpoint.
-          items:
-            $ref: '#/components/schemas/AWS.VPCEndpointConnection.DNSEntry'
-          type: array
-        id:
-          description: The ID of VPC endpoint.
-          type: string
-        load_balancer_arns:
-          description: The list of load balancer ARNs.
-          items:
-            type: string
-          type: array
-        owner:
-          description: The owner of VPC endpoint.
-          type: string
-        state:
-          description: The state of VPC endpoint connected to Redpanda AWS Private Link Endpoint Service.
-          example: pendingAcceptance | pending | available | deleting | deleted | rejected | failed
-          type: string
-      type: object
-    AWS.VPCEndpointConnection.DNSEntry:
-      properties:
-        dns_name:
-          description: The connection ID of VPC endpoint connected to Redpanda AWS Private Link Endpoint Service.
-          example: vpce-0751b7ad8a51777f2-1hpievf5.vpce-svc-0d489fa89f24e3802.us-east-2.vpce.amazonaws.com
-          type: string
-        hosted_zone_id:
-          description: The ID of Route53 DNS zone.
-          type: string
-      type: object
     AWSPrivateLinkSpec:
       description: AWS PrivateLink specification.
       properties:
@@ -248,137 +207,12 @@ components:
         - aks_service_cidr
       title: CIDR
       type: object
-    Cluster.CustomerManagedResources:
-      description: The cloud resources created by user.
+    Cluster.ClusterConfiguration:
       properties:
-        aws:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS'
-        gcp:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP'
-      type: object
-    Cluster.CustomerManagedResources.AWS:
-      description: AWS resources created by user.
-      properties:
-        agent_instance_profile:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.InstanceProfile'
-        connectors_node_group_instance_profile:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.InstanceProfile'
-        connectors_node_group_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        connectors_secrets_manager_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        console_secrets_manager_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        k8s_cluster_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        redpanda_cloud_storage_manager_policy:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Policy'
-        redpanda_cloud_storage_manager_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        redpanda_node_group_instance_profile:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.InstanceProfile'
-        redpanda_node_group_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-        utility_node_group_instance_profile:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.InstanceProfile'
-        utility_node_group_role:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.AWS.Role'
-      type: object
-    Cluster.CustomerManagedResources.AWS.InstanceProfile:
-      description: Instance Profile identifies AWS instance profile.
-      properties:
-        arn:
-          description: The arn of AWS instance profile.
-          type: string
-      required:
-        - arn
-      title: Instance Profile
-      type: object
-    Cluster.CustomerManagedResources.AWS.Policy:
-      description: Policy identifies AWS policy.
-      properties:
-        arn:
-          description: The arn of AWS policy.
-          type: string
-      required:
-        - arn
-      title: Policy
-      type: object
-    Cluster.CustomerManagedResources.AWS.Role:
-      description: Role identifies AWS role.
-      properties:
-        arn:
-          description: The arn of AWS role.
-          type: string
-      required:
-        - arn
-      title: Role
-      type: object
-    Cluster.CustomerManagedResources.GCP:
-      description: GCP resources managed by user and required for deploying Redpanda cluster.
-      properties:
-        agent_service_account:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.ServiceAccount'
-        connector_service_account:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.ServiceAccount'
-        console_service_account:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.ServiceAccount'
-        gke_service_account:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.ServiceAccount'
-        psc_nat_subnet_name:
-          description: NAT subnet name if GCP Private Service Connect (a.k.a Private Link) is enabled.
-          type: string
-        redpanda_cluster_service_account:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.ServiceAccount'
-        subnet:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.Subnet'
-        tiered_storage_bucket:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedGoogleCloudStorageBucket'
-      required:
-        - subnet
-        - agent_service_account
-        - console_service_account
-        - connector_service_account
-        - redpanda_cluster_service_account
-        - gke_service_account
-        - tiered_storage_bucket
-      title: GCP Customer Managed Resoures
-      type: object
-    Cluster.CustomerManagedResources.GCP.ServiceAccount:
-      description: Service Account identifies GCP service account.
-      properties:
-        email:
-          description: The email of GCP service account.
-          type: string
-      required:
-        - email
-      title: Service Account
-      type: object
-    Cluster.CustomerManagedResources.GCP.Subnet:
-      description: Resource describing GCP subnet.
-      properties:
-        k8s_master_ipv4_range:
-          description: Kubernetes Master IPv4 range, e.g. 10.0.0.0/24.
-          type: string
-        name:
-          title: Subnet name
-          type: string
-        secondary_ipv4_range_pods:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.Subnet.SecondaryIPv4Range'
-        secondary_ipv4_range_services:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources.GCP.Subnet.SecondaryIPv4Range'
-      required:
-        - name
-        - secondary_ipv4_range_pods
-        - secondary_ipv4_range_services
-        - k8s_master_ipv4_range
-      title: Subnet
-      type: object
-    Cluster.CustomerManagedResources.GCP.Subnet.SecondaryIPv4Range:
-      description: SecondaryIPv4Range defines IPv4 range.
-      properties:
-        name:
-          type: string
+        computed_properties:
+          type: object
+        custom_properties:
+          type: object
       type: object
     Cluster.SchemaRegistryStatus:
       description: Cluster's Schema Registry properties.
@@ -412,6 +246,8 @@ components:
             Note: If a tag is GCP network tag, its value will be ignored.
             See the details on network tags at https://cloud.google.com/vpc/docs/add-remove-network-tags.
           type: object
+        cluster_configuration:
+          $ref: '#/components/schemas/ClusterCreate.ClusterConfiguration'
         connection_type:
           $ref: '#/components/schemas/v1beta2.Cluster.ConnectionType'
         connectivity:
@@ -477,6 +313,11 @@ components:
         - zones
       title: ClusterCreate
       type: object
+    ClusterCreate.ClusterConfiguration:
+      properties:
+        custom_properties:
+          type: object
+      type: object
     ClusterUpdate:
       description: Resource describing a Create Cluster.
       properties:
@@ -497,6 +338,8 @@ components:
             Note: The value of a network tag will be ignored.
             See the details on network tags at https://cloud.google.com/vpc/docs/add-remove-network-tags.
           type: object
+        cluster_configuration:
+          $ref: '#/components/schemas/ClusterUpdate.ClusterConfiguration'
         customer_managed_resources:
           $ref: '#/components/schemas/CustomerManagedResourcesUpdate'
         gcp_private_service_connect:
@@ -526,6 +369,11 @@ components:
       required:
         - id
       title: ClusterUpdate
+      type: object
+    ClusterUpdate.ClusterConfiguration:
+      properties:
+        custom_properties:
+          type: object
       type: object
     ConnectivitySpec:
       properties:
@@ -570,11 +418,43 @@ components:
         resource_group:
           $ref: '#/components/schemas/ResourceGroup'
       type: object
+    CreateRoleBindingRequest:
+      description: CreateRoleBindingRequest is the request of CreateRoleBinding.
+      properties:
+        role_binding:
+          $ref: '#/components/schemas/RoleBindingCreate'
+      type: object
+    CreateRoleBindingResponse:
+      properties:
+        role_binding:
+          $ref: '#/components/schemas/v1alpha1.RoleBinding'
+      type: object
     CreateServerlessClusterOperation:
       description: CreateServerlessClusterOperation is the response of the create serverless_cluster rpc.
       properties:
         operation:
           $ref: '#/components/schemas/v1beta2.Operation'
+      type: object
+    CreateServiceAccountRequest:
+      description: CreateServiceAccountRequest is the request of CreateServiceAccount.
+      properties:
+        service_account:
+          $ref: '#/components/schemas/ServiceAccountCreate'
+      type: object
+    CreateServiceAccountResponse:
+      properties:
+        service_account:
+          $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+      type: object
+    CreateUserInviteRequest:
+      properties:
+        user_invite:
+          $ref: '#/components/schemas/UserInviteCreate'
+      type: object
+    CreateUserInviteResponse:
+      properties:
+        user_invite:
+          $ref: '#/components/schemas/UserInvite'
       type: object
     CustomerManagedAzureBucketSpec:
       description: Azure Bucket Specification
@@ -636,7 +516,6 @@ components:
       description: |-
         Represents a day of the week.
 
-         - DAY_OF_WEEK_UNSPECIFIED: The day of the week is unspecified.
          - MONDAY: Monday
          - TUESDAY: Tuesday
          - WEDNESDAY: Wednesday
@@ -659,8 +538,6 @@ components:
         operation:
           $ref: '#/components/schemas/v1beta2.Operation'
       type: object
-    DeleteNamespaceResponse:
-      type: object
     DeleteNetworkOperation:
       description: DeleteNetworkOperation is the response of the delete network rpc.
       properties:
@@ -670,11 +547,20 @@ components:
     DeleteResourceGroupResponse:
       description: DeleteResourceGroupResponse is the response of DeleteResourceGroup.
       type: object
+    DeleteRoleBindingResponse:
+      description: DeleteRoleBindingResponse is the response of DeleteRoleBinding.
+      type: object
     DeleteServerlessClusterOperation:
       description: DeleteServerlessClusterOperation is the response of the delete serverless_cluster rpc.
       properties:
         operation:
           $ref: '#/components/schemas/v1beta2.Operation'
+      type: object
+    DeleteServiceAccountResponse:
+      type: object
+    DeleteUserInviteResponse:
+      type: object
+    DeleteUserResponse:
       type: object
     ErrorInfo:
       description: |-
@@ -782,32 +668,6 @@ components:
               value in the third `emailAddresses` message.
           type: string
       type: object
-    GCP.ConnectedEndpoint:
-      description: ConnectedEndpoint defines endpoint connection connected to Redpanda GCP PSC (Private Service Connect) service.
-      properties:
-        connection_id:
-          description: The ID of endpoint connection.
-          type: string
-        consumer_network:
-          title: |-
-            The network of consumer connecting to Redpanda GCP PSC (Private Service Connect).
-            e.g. https://www.googleapis.com/compute/v1/projects/my-project/global/networks/vpc-consumer-psc
-          type: string
-        endpoint:
-          title: |-
-            The endpoint of connection.
-            e.g. https://www.googleapis.com/compute/v1/projects/my-project/regions/us-west2/forwardingRules/vpc-consumer-psc
-          type: string
-        status:
-          description: |-
-            status is the status of the endpoint (ACCEPTED | REJECTED).
-
-            The ServiceAttachment API resource (https://cloud.google.com/compute/docs/reference/rest/v1/serviceAttachments)
-             does have more fields, such as connection ID & consumer network, but the Terraform provider
-             (https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_service_attachment#nested_connected_endpoints)
-             doesn't return them as outputs.
-          type: string
-      type: object
     GCPPrivateServiceConnectConsumer:
       description: GCP Private Service Connect consumer specifications.
       properties:
@@ -899,6 +759,14 @@ components:
         cluster:
           $ref: '#/components/schemas/v1beta2.Cluster'
       type: object
+    GetCurrentOrganizationResponse:
+      properties:
+        organization:
+          $ref: '#/components/schemas/Organization'
+      title: |-
+        GetCurrentOrganizationResponse the response of the the
+        GetCurrentOrganization rpc
+      type: object
     GetNetworkResponse:
       description: GetNetworkRequest is the request of GetNetwork.
       properties:
@@ -922,6 +790,11 @@ components:
         resource_group:
           $ref: '#/components/schemas/ResourceGroup'
       type: object
+    GetRoleBindingResponse:
+      properties:
+        role_binding:
+          $ref: '#/components/schemas/v1alpha1.RoleBinding'
+      type: object
     GetServerlessClusterResponse:
       description: GetServerlessClusterResponse is the request of GetServerlessCluster.
       properties:
@@ -934,21 +807,30 @@ components:
         serverless_region:
           $ref: '#/components/schemas/ServerlessRegion'
       type: object
+    GetServiceAccountCredentialsResponse:
+      properties:
+        credentials:
+          $ref: '#/components/schemas/ServiceAccountCredentials'
+      type: object
+    GetServiceAccountResponse:
+      properties:
+        service_account:
+          $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+      type: object
     GetThroughputTierResponse:
       properties:
         throughput_tier:
           $ref: '#/components/schemas/ThroughputTier'
       type: object
-    HTTPProxy:
-      description: Describes specifics about the HTTP Proxy
+    GetUserInviteResponse:
       properties:
-        mtls:
-          $ref: '#/components/schemas/v1beta1.MTLSSpec'
-        url:
-          description: URL of Redpanda's HTTP Proxy
-          example: https://pandaproxy-aa0000l0.cjb69h1c4vs42pca89s0.fmc.prd.cloud.redpanda.com:9092
-          readOnly: true
-          type: string
+        user_invite:
+          $ref: '#/components/schemas/UserInvite'
+      type: object
+    GetUserResponse:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
       type: object
     HTTPProxySpec:
       description: Cluster's HTTP Proxy properties. See [Use Redpanda with the HTTP Proxy API](https://docs.redpanda.com/current/develop/http-proxy/) and the [HTTP Proxy API reference](https://docs.redpanda.com/api/pandaproxy-rest) for more information.
@@ -1026,31 +908,17 @@ components:
           description: The URL of the link.
           type: string
       type: object
-    ListNamespacesRequest.Filter:
-      properties:
-        name:
-          type: string
-      type: object
-    ListNamespacesResponse:
-      description: ListNamespacesResponse is the response of ListNamespaces.
-      properties:
-        namespaces:
-          description: Namespaces matching the request
-          items:
-            $ref: '#/components/schemas/Namespace'
-          maxItems: 100
-          type: array
-        next_page_token:
-          type: string
-      type: object
-    ListRedpandaVersionsResponse:
+    ListAvailableOrganizationsResponse:
       properties:
         next_page_token:
           type: string
-        versions:
+        organizations:
           items:
-            $ref: '#/components/schemas/RedpandaVersion'
+            $ref: '#/components/schemas/Organization'
           type: array
+      title: |-
+        GetAvalableOrganizationsResponse the response of the
+        GetAvalableOrganizations rpc
       type: object
     ListRegionsRequest.Filter:
       properties:
@@ -1085,6 +953,33 @@ components:
           description: Matching resource groups.
           items:
             $ref: '#/components/schemas/ResourceGroup'
+          maxItems: 100
+          type: array
+      type: object
+    ListRoleBindingsRequest.Filter:
+      properties:
+        account:
+          nullable: true
+          type: string
+        account_ids:
+          items:
+            type: string
+          type: array
+        role_name:
+          nullable: true
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+      type: object
+    ListRoleBindingsResponse:
+      description: ListRoleBindingsResponse is the response of ListRoleBindings.
+      properties:
+        next_page_token:
+          type: string
+        role_bindings:
+          description: RoleBindings matching the request
+          items:
+            $ref: '#/components/schemas/v1alpha1.RoleBinding'
           maxItems: 100
           type: array
       type: object
@@ -1130,6 +1025,23 @@ components:
             $ref: '#/components/schemas/ServerlessRegion'
           type: array
       type: object
+    ListServiceAccountsRequest.Filter:
+      properties:
+        name:
+          type: string
+      type: object
+    ListServiceAccountsResponse:
+      description: ListServiceAccountsResponse is the response of ListServiceAccounts.
+      properties:
+        next_page_token:
+          type: string
+        service_accounts:
+          description: ServiceAccounts matching the request
+          items:
+            $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+          maxItems: 100
+          type: array
+      type: object
     ListThroughputTiersRequest.Filter:
       properties:
         cloud_provider:
@@ -1149,6 +1061,34 @@ components:
             $ref: '#/components/schemas/ThroughputTier'
           type: array
       type: object
+    ListUserInvitesRequest.Filter:
+      type: object
+    ListUserInvitesResponse:
+      description: ListUserInvitesResponse is the response of ListUserInvites.
+      properties:
+        next_page_token:
+          type: string
+        user_invites:
+          description: User invites matching the request
+          items:
+            $ref: '#/components/schemas/UserInvite'
+          maxItems: 100
+          type: array
+      type: object
+    ListUsersRequest.Filter:
+      type: object
+    ListUsersResponse:
+      description: ListUsersResponse is the response of ListUsers.
+      properties:
+        next_page_token:
+          type: string
+        users:
+          description: Users matching the request
+          items:
+            $ref: '#/components/schemas/User'
+          maxItems: 100
+          type: array
+      type: object
     MaintenanceWindowConfig:
       description: Resource describing the maintenance window configuration of a cluster.
       properties:
@@ -1159,25 +1099,6 @@ components:
         unspecified:
           $ref: '#/components/schemas/Unspecified'
       title: MaintenanceWindowConfig
-      type: object
-    Namespace:
-      properties:
-        created_at:
-          format: date-time
-          readOnly: true
-          type: string
-        id:
-          readOnly: true
-          title: ID of the namespace. ID is an output of CreateNamespace and cannot be set up by the caller
-          type: string
-        name:
-          description: The unique name of the namespace.
-          example: development
-          type: string
-        updated_at:
-          format: date-time
-          readOnly: true
-          type: string
       type: object
     Network.CustomerManagedResources.Azure:
       description: The Azure resources managed by user.
@@ -1225,6 +1146,13 @@ components:
         - type
       title: Network details
       type: object
+    NullValue:
+      description: |-
+        `NullValue` is a singleton enumeration to represent the null value for the
+        `Value` type union.
+
+        The JSON representation for `NullValue` is JSON `null`.
+      type: string
     OperationMetadata:
       description: Metadata of the long-running Operation. Contains in-progress information.
       oneOf:
@@ -1311,6 +1239,23 @@ components:
                     - type.googleapis.com/redpanda.api.controlplane.v1beta2.DeleteNetworkResponse
                   type: string
             - $ref: '#/components/schemas/v1beta2.DeleteNetworkResponse'
+    Organization:
+      properties:
+        auth0_id:
+          type: string
+        default_resource_group_id:
+          nullable: true
+          type: string
+        id:
+          title: internal id of the organization
+          type: string
+        name:
+          title: display name of the organization
+          type: string
+        welcome_cluster_id:
+          nullable: true
+          type: string
+      type: object
     PlannedDeletion:
       description: Date after which this cluster can and should be deleted.
       properties:
@@ -1344,151 +1289,6 @@ components:
           description: The status of private endpoint connected to Redpanda Azure PrivateLink Endpoint Service.
           example: Approved | Rejected
           title: status is the status of the Azure PE
-          type: string
-      type: object
-    PrivateLinkSpec:
-      description: Describes specifics about GCP PSC or AWS Private Link.
-      properties:
-        aws:
-          $ref: '#/components/schemas/PrivateLinkSpec.AWS'
-        enabled:
-          description: Indication on whether Redpanda AWS Private Link Endpoint Service is enabled.
-          type: boolean
-        gcp:
-          $ref: '#/components/schemas/PrivateLinkSpec.GCP'
-        status:
-          $ref: '#/components/schemas/PrivateLinkStatus'
-      type: object
-    PrivateLinkSpec.AWS:
-      properties:
-        allowed_principals:
-          description: The ARN of the principals that can access Redpanda AWS Private Link Endpoint Service. To grant permissions to all principals, use an asterisk (*).
-          example: arn:aws:iam::account-number-without-hyphens:user/username or arn:aws:iam::account-number-without-hyphens:root
-          items:
-            type: string
-          type: array
-      type: object
-    PrivateLinkSpec.GCP:
-      properties:
-        consumer_accept_list:
-          description: The consumers that are allowed to connect to Redpanda GCP PSC (Private Service Connect) service attachment.
-          items:
-            $ref: '#/components/schemas/PrivateServiceConnectConsumer'
-          type: array
-        enable_global_access:
-          description: enable_global_access controls whether global access is enabled.
-          type: boolean
-      type: object
-    PrivateLinkStatus:
-      description: Describes the status of Redpanda Private Link Service
-      properties:
-        aws:
-          $ref: '#/components/schemas/PrivateLinkStatus.AWS'
-        gcp:
-          $ref: '#/components/schemas/PrivateLinkStatus.GCP'
-      readOnly: true
-      type: object
-    PrivateLinkStatus.AWS:
-      properties:
-        created_at:
-          description: Timestamp when Redpanda AWS Private Link Endpoint Service was created.
-          format: date-time
-          type: string
-        deleted_at:
-          description: Timestamp when Redpanda AWS Private Link Service was deleted.
-          format: date-time
-          type: string
-        kafka_api_node_base_port:
-          description: The base port of Kafka API node service. The port for node i (0 .. node_count-1) is kafka_api_node_base_port + i.
-          format: int32
-          type: integer
-        kafka_api_seed_port:
-          description: The port of Kafka API seed service.
-          format: int32
-          type: integer
-        redpanda_proxy_node_base_port:
-          description: The base port of Redpanda Proxy node service. The port for node i (0 .. node_count-1) is redpanda_proxy_node_base_port + i.
-          format: int32
-          type: integer
-        redpanda_proxy_seed_port:
-          description: The port of Redpanda Proxy seed service.
-          format: int32
-          type: integer
-        schema_registry_seed_port:
-          description: The port of Schema Registry seed service.
-          format: int32
-          type: integer
-        service_id:
-          description: The ID of Redpanda AWS Private Link Endpoint Service.
-          example: vpce-svc-05fff2117d648da35
-          type: string
-        service_name:
-          description: The name of Redpanda AWS Private Link Endpoint Service.
-          example: com.amazonaws.vpce.us-west-2.vpce-svc-05fff2117d648da35
-          type: string
-        service_state:
-          description: The state of Redpanda AWS Private Link Endpoint Service.
-          example: Pending | Available | Deleting | Deleted | Failed
-          type: string
-        vpc_endpoint_connections:
-          description: The list of VPC endpoints established with Redpanda AWS Private Link Endpoint Service.
-          items:
-            $ref: '#/components/schemas/AWS.VPCEndpointConnection'
-          type: array
-      type: object
-    PrivateLinkStatus.GCP:
-      properties:
-        connected_endpoints:
-          description: The list of VPC endpoints established with GCP PSC.
-          items:
-            $ref: '#/components/schemas/GCP.ConnectedEndpoint'
-          type: array
-        created_at:
-          description: Timestamp when Redpanda GCP PSC was created.
-          format: date-time
-          type: string
-        deleted_at:
-          description: Timestamp when Redpanda GCP PSC was deleted.
-          format: date-time
-          type: string
-        dns_a_records:
-          description: dns_a_records are the DNS A records the customer will create pointing at the PSC endpoint on the consumer side.
-          items:
-            type: string
-          type: array
-        kafka_api_node_base_port:
-          description: The base port of Kafka API node service. The port for node i (0 .. node_count-1) is kafka_api_node_base_port + i.
-          format: int32
-          type: integer
-        kafka_api_seed_port:
-          description: The port of Kafka API seed service.
-          format: int32
-          type: integer
-        redpanda_proxy_node_base_port:
-          description: The base port of Redpanda Proxy node service. The port for node i (0 .. node_count-1) is redpanda_proxy_node_base_port + i.
-          format: int32
-          type: integer
-        redpanda_proxy_seed_port:
-          description: The port of Redpanda Proxy seed service.
-          format: int32
-          type: integer
-        schema_registry_seed_port:
-          description: The port of Schema Registry seed service.
-          format: int32
-          type: integer
-        seed_hostname:
-          description: seed_hostname is the hostname to be advertised for clients to initiate connections to the APIs exposed through PSC.
-          type: string
-        service_attachment:
-          description: The service attachment used by by consumers to create endpoint connections to Redpanda GCP PSC.
-          type: string
-      type: object
-    PrivateServiceConnectConsumer:
-      description: PrivateServiceConnectConsumer contains the info for a PSC consumer.
-      properties:
-        source:
-          description: source can either be the GCP project number or its alphanumeric ID.
-          example: gcp-project-1
           type: string
       type: object
     QuotaFailure:
@@ -1532,11 +1332,6 @@ components:
             The subject on which the quota check failed.
             For example, "clientip:<ip address of client>" or "project:<Google
             developer project id>".
-          type: string
-      type: object
-    RedpandaVersion:
-      properties:
-        redpanda_version:
           type: string
       type: object
     Region:
@@ -1618,15 +1413,14 @@ components:
         - iam_resource_group
       title: Azure Resoure Groups
       type: object
-    SchemaRegistry:
-      description: Describes specifics about the Schema Registry endpoint
+    RoleBindingCreate:
       properties:
-        mtls:
-          $ref: '#/components/schemas/v1beta1.MTLSSpec'
-        url:
-          description: Schema Registry URL.
-          readOnly: true
+        account_id:
           type: string
+        role_name:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
       type: object
     SchemaRegistrySpec:
       description: Cluster's Schema Registry properties. See the [Schema Registry overview](https://docs.redpanda.com/current/manage/schema-reg/schema-reg-overview/) and the [Schema Registry API reference](https://docs.redpanda.com/api/pandaproxy-schema-registry) for more information.
@@ -1634,6 +1428,22 @@ components:
         mtls:
           $ref: '#/components/schemas/v1beta2.MTLSSpec'
       type: object
+    Scope:
+      properties:
+        resource_id:
+          type: string
+        resource_type:
+          $ref: '#/components/schemas/ScopeResourceType'
+      type: object
+    ScopeResourceType:
+      enum:
+        - SCOPE_RESOURCE_TYPE_RESOURCE_GROUP
+        - SCOPE_RESOURCE_TYPE_NETWORK
+        - SCOPE_RESOURCE_TYPE_CLUSTER
+        - SCOPE_RESOURCE_TYPE_SERVERLESS_CLUSTER
+        - SCOPE_RESOURCE_TYPE_NETWORK_PEERING
+        - SCOPE_RESOURCE_TYPE_ORGANIZATION
+      type: string
     SecurityGroups:
       description: Azure security groups for Redpanda Cluster. All security groups shall be in the network resource group.
       properties:
@@ -1790,6 +1600,40 @@ components:
             $ref: '#/components/schemas/Tier'
           type: array
       title: ServerlessRegion
+      type: object
+    ServiceAccountCreate:
+      properties:
+        description:
+          description: The description of the service_account.
+          example: CI bot account is used for CI workloads.
+          type: string
+        name:
+          description: The unique name of the service_account.
+          example: billing_admin
+          type: string
+      type: object
+    ServiceAccountCredentials:
+      properties:
+        client_id:
+          description: The client ID of the credentials
+          example: CDFX4567298
+          type: string
+        client_secret:
+          description: The client secret
+          example: dYz_FZqNM6E3_O1lKUwONKNQ4TKf7i
+          nullable: true
+          type: string
+      type: object
+    ServiceAccountUpdate:
+      properties:
+        description:
+          description: The description of the service account.
+          example: CI bot account is used for CI workloads.
+          type: string
+        name:
+          description: The unique name of the service account.
+          example: ci_bot
+          type: string
       type: object
     Status.ConnectedEndpoint:
       description: ConnectedEndpoint defines endpoint connection connected to Redpanda GCP PSC (Private Service Connect) service.
@@ -1989,6 +1833,46 @@ components:
           $ref: '#/components/schemas/ResourceGroup'
       title: UpdateResourceGroupResponse is the response of UpdateResourceGroup
       type: object
+    UpdateServiceAccountBody:
+      properties:
+        service_account:
+          $ref: '#/components/schemas/ServiceAccountUpdate'
+        update_mask:
+          type: string
+      title: UpdateServiceAccountRequest is the request of UpdateServiceAccount
+      type: object
+    UpdateServiceAccountResponse:
+      properties:
+        service_account:
+          $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+      type: object
+    UpdateUserInviteBody:
+      properties:
+        update_mask:
+          type: string
+        user_invite:
+          $ref: '#/components/schemas/UserInviteUpdate'
+      title: UpdateUserInviteRequest is the request of UpdateUserInvite
+      type: object
+    UpdateUserInviteResponse:
+      properties:
+        user_invite:
+          $ref: '#/components/schemas/UserInvite'
+      type: object
+    User:
+      properties:
+        created_at:
+          format: date-time
+          type: string
+        email:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        picture_url:
+          type: string
+      type: object
     UserAssignedIdentities:
       description: Azure user assigned identities used by Redpanda cluster. All identities shall be in iam_resource_group.
       properties:
@@ -2015,6 +1899,51 @@ components:
         - redpanda_console_assigned_identity
         - kafka_connect_assigned_identity
       title: User Assigned Identities
+      type: object
+    UserInvite:
+      properties:
+        created_at:
+          format: date-time
+          type: string
+        email:
+          type: string
+        expires_at:
+          format: date-time
+          type: string
+        id:
+          type: string
+        invite_url:
+          type: string
+        role_bindings:
+          items:
+            $ref: '#/components/schemas/UserInvite.RoleBinding'
+          type: array
+      type: object
+    UserInvite.RoleBinding:
+      properties:
+        role_name:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+      type: object
+    UserInviteCreate:
+      properties:
+        email:
+          type: string
+        role_bindings:
+          items:
+            $ref: '#/components/schemas/UserInvite.RoleBinding'
+          type: array
+      type: object
+    UserInviteUpdate:
+      properties:
+        expires_at:
+          format: date-time
+          type: string
+        role_bindings:
+          items:
+            $ref: '#/components/schemas/UserInvite.RoleBinding'
+          type: array
       type: object
     Vnet:
       description: Azure VNET.
@@ -2098,503 +2027,43 @@ components:
           description: Detailed error message. No compatibility guarantees are given for the text contained in this message.
           type: string
       type: object
-    v1beta1.CloudProvider:
-      description: Cloud Provider where resources are created.
-      enum:
-        - CLOUD_PROVIDER_AWS
-        - CLOUD_PROVIDER_GCP
-        - CLOUD_PROVIDER_AZURE
-      type: string
-    v1beta1.Cluster:
-      description: Resource describing a Cluster.
+    v1alpha1.RoleBinding:
       properties:
-        cloud_provider:
-          $ref: '#/components/schemas/v1beta1.CloudProvider'
-        cloud_tags:
-          additionalProperties:
-            type: string
-          description: Tags that are placed on Cloud resources.
-          type: object
-        connection_type:
-          $ref: '#/components/schemas/v1beta1.Cluster.ConnectionType'
-        created_at:
-          description: Timestamp when the cluster was created.
-          format: date-time
-          readOnly: true
+        account_id:
           type: string
-        customer_managed_resources:
-          $ref: '#/components/schemas/Cluster.CustomerManagedResources'
-        dataplane_api:
-          $ref: '#/components/schemas/v1beta1.Cluster.DataplaneAPI'
-        http_proxy:
-          $ref: '#/components/schemas/HTTPProxy'
-        id:
-          description: ID of the cluster. ID is an output of CreateCluster, and cannot be set by the caller.
-          readOnly: true
-          type: string
-        kafka_api:
-          $ref: '#/components/schemas/v1beta1.Cluster.KafkaAPI'
-        name:
-          description: Unique name of the cluster.
-          example: development-cluster
-          type: string
-        namespace_id:
-          description: Namespace id of the network
-          example: a0b40af9-0250-48ca-9417-783ed127ce42
-          type: string
-        network_id:
-          description: Id of the Network where the cluster will be placed
-          example: cjcuq79c4vs94fcufc2g
-          type: string
-        private_link:
-          $ref: '#/components/schemas/PrivateLinkSpec'
-        prometheus:
-          $ref: '#/components/schemas/v1beta1.Cluster.Prometheus'
-        read_replica_cluster_ids:
-          description: IDs of clusters which may create read-only topics from this cluster.
-          items:
-            type: string
-          type: array
-        redpanda_console:
-          $ref: '#/components/schemas/v1beta1.Cluster.RedpandaConsole'
-        redpanda_version:
-          description: |-
-            Desired redpanda version when creating a cluster, only major.minor semver
-            supported on creation.
-          type: string
-        region:
-          description: Region of the cloud provider<br>Available values:<br>GCP:<br>- asia-south1<br>- asia-southeast1<br>- australia-southeast1<br>- europe-west1<br>- europe-west2<br>- northamerica-northeast1<br>- us-central1<br>- us-east1<br><br>AWS:<br>- af-south-1<br>- ap-southeast-1<br>- ap-southeast-1<br>- ca-central-1<br>- eu-central-1<br>- eu-west-1<br>- us-east-1<br>- us-east-2<br>- us-west-2
-          example: us-central1
-          type: string
-        schema_registry:
-          $ref: '#/components/schemas/SchemaRegistry'
-        state:
-          $ref: '#/components/schemas/v1beta1.Cluster.State'
-        state_description:
-          $ref: '#/components/schemas/rpc.Status'
-        throughput_tier:
-          description: Throughput tier of the cluster.<br>Available values:<br>AWS:<br>- tier-1-aws-sbdg<br>- tier-2-aws-ugn0<br>- tier-3-aws-ugo0<br>- tier-4-aws-ugog<br>- tier-5-aws-ugp0<br>GCP:<br>- tier-1-gcp-um4g<br>- tier-2-gcp-um50<br>- tier-3-gcp-um5g<br>- tier-4-gcp-um60<br>- tier-5-gcp-um6g<br>
-          type: string
-        type:
-          $ref: '#/components/schemas/v1beta1.Cluster.Type'
-        updated_at:
-          description: Timestamp when the cluster was updated.
-          format: date-time
-          readOnly: true
-          type: string
-        zones:
-          description: |-
-            Zones of the cluster. Must be valid zones within the selected region.
-            If multiple zones are used, the cluster is a multi-AZ cluster.
-          items:
-            type: string
-          type: array
-      required:
-        - name
-        - namespace_id
-        - cloud_provider
-        - connection_type
-        - network_id
-        - region
-        - throughput_tier
-        - type
-        - zones
-      title: Cluster
-      type: object
-    v1beta1.Cluster.ConnectionType:
-      description: |-
-        ConnectionType describes the cluster connection type of a Redpanda Cluster.
-        Private clusters are not exposted to the internet.
-      enum:
-        - CONNECTION_TYPE_PUBLIC
-        - CONNECTION_TYPE_PRIVATE
-      type: string
-    v1beta1.Cluster.DataplaneAPI:
-      description: Describes specifics about the Dataplane API endpoint
-      properties:
-        url:
-          description: URL of Dataplane API
-          example: https://api-ab1234l0.cjb69h1c4vs42pca89s0.fmc.prd.cloud.redpanda.com
-          readOnly: true
-          type: string
-      readOnly: true
-      type: object
-    v1beta1.Cluster.KafkaAPI:
-      description: Describes specifics about redpanda's Kafka API.
-      properties:
-        mtls:
-          $ref: '#/components/schemas/v1beta1.MTLSSpec'
-        seed_brokers:
-          description: Kafka API Seed Brokers (also known as Bootstrap servers).
-          items:
-            type: string
-          readOnly: true
-          type: array
-      type: object
-    v1beta1.Cluster.Prometheus:
-      description: Describes specifics about the Prometheus metrics endpoint
-      properties:
-        url:
-          description: URL of Prometheus API
-          example: https://console-aa0000l0.cjb69h1c4vs42pca89s0.fmc.prd.cloud.redpanda.com/api/cloud/prometheus/public_metrics
-          readOnly: true
-          type: string
-      readOnly: true
-      type: object
-    v1beta1.Cluster.RedpandaConsole:
-      description: Describes specifics about the Redpanda Console endpoint
-      properties:
-        url:
-          description: URL of Redpanda Console API
-          example: https://console-aa0000l0.cjb69h1c4vs42pca89s0.fmc.prd.cloud.redpanda.com/api
-          readOnly: true
-          type: string
-      readOnly: true
-      type: object
-    v1beta1.Cluster.State:
-      description: State describes the state of the cluster.
-      enum:
-        - STATE_CREATING_AGENT
-        - STATE_CREATING
-        - STATE_READY
-        - STATE_DELETING
-        - STATE_DELETING_AGENT
-        - STATE_UPGRADING
-        - STATE_FAILED
-      type: string
-    v1beta1.Cluster.Type:
-      description: Type of the Cluster. Immutable. Can only be set on cluster creation.
-      enum:
-        - TYPE_DEDICATED
-        - TYPE_BYOC
-      type: string
-    v1beta1.CreateClusterMetadata:
-      description: Resource describing an in-progress CreateCluster Operation.
-      properties:
-        cluster_id:
-          description: ID of the Cluster created by this operation.
-          type: string
-      title: CreateClusterMetadata
-      type: object
-    v1beta1.CreateNetworkMetadata:
-      description: Resource describing an in-progress CreateNetwork Operation.
-      properties:
-        network_id:
-          description: ID of the network created by this Operation.
-          type: string
-      title: CreateNetworkMetadata
-      type: object
-    v1beta1.CustomerManagedAWSCloudStorageBucket:
-      description: AWS Storage Bucket Specification by ARN
-      properties:
-        arn:
-          description: The identifier of AWS storage bucket.
-          type: string
-      required:
-        - arn
-      title: AWS Storage Bucket
-      type: object
-    v1beta1.CustomerManagedAWSSubnets:
-      description: AWS DynamoDB Table Specification
-      properties:
-        arns:
-          items:
-            type: string
-          title: The identifiers of AWS subnets
-          type: array
-      required:
-        - arns
-      title: AWS DynamoDB Table
-      type: object
-    v1beta1.CustomerManagedAWSVPC:
-      description: AWS DynamoDB Table Specification
-      properties:
-        arn:
-          title: The identifier of AWS VPC
-          type: string
-      required:
-        - arn
-      title: AWS DynamoDB Table
-      type: object
-    v1beta1.CustomerManagedDynamoDBTable:
-      description: AWS DynamoDB Table Specification
-      properties:
-        arn:
-          description: The identifier of AWS DynamoDB table.
-          type: string
-      required:
-        - arn
-      title: AWS DynamoDB Table
-      type: object
-    v1beta1.CustomerManagedGoogleCloudStorageBucket:
-      description: GCP Storage Bucket Specification
-      properties:
-        name:
-          title: |-
-            The name of GCP storage bucket.
-            Naming restrictions: https://cloud.google.com/storage/docs/buckets?_ga=2.149222271.-875130499.1677603347#naming
-          type: string
-      required:
-        - name
-      title: GCP Storage Bucket
-      type: object
-    v1beta1.DeleteClusterMetadata:
-      description: Resource describing an in-progress DeleteCluster Operation.
-      title: DeleteClusterMetadata
-      type: object
-    v1beta1.DeleteNetworkMetadata:
-      description: Resource describing an in-progress DeleteNetwork Operation.
-      title: DeleteNetworkMetadata
-      type: object
-    v1beta1.ListClustersRequest.Filter:
-      properties:
-        cloud_provider:
-          $ref: '#/components/schemas/v1beta1.CloudProvider'
-        name:
-          type: string
-        namespace_id:
-          type: string
-        network_id:
-          type: string
-        region:
-          type: string
-      type: object
-    v1beta1.ListClustersResponse:
-      description: ListClustersResponse is the response of ListClusters.
-      properties:
-        clusters:
-          description: Clusters matching the request
-          items:
-            $ref: '#/components/schemas/v1beta1.Cluster'
-          maxItems: 100
-          type: array
-        next_page_token:
-          description: Page Token to fetch the next page. The value can be used as next_page_token in the next call to this endpoint.
-          type: string
-      type: object
-    v1beta1.ListNetworksRequest.Filter:
-      properties:
-        cloud_provider:
-          $ref: '#/components/schemas/v1beta1.CloudProvider'
-        name:
-          type: string
-        namespace_id:
-          type: string
-        region:
-          type: string
-      type: object
-    v1beta1.ListNetworksResponse:
-      description: ListNetworksResponse is the response of ListNetworks.
-      properties:
-        networks:
-          description: Networks matching the request
-          items:
-            $ref: '#/components/schemas/v1beta1.Network'
-          maxItems: 100
-          type: array
-        next_page_token:
-          type: string
-      type: object
-    v1beta1.ListOperationsRequest.Filter:
-      properties:
-        state:
-          $ref: '#/components/schemas/v1beta1.Operation.State'
-        type_in:
-          items:
-            $ref: '#/components/schemas/v1beta1.Operation.Type'
-          type: array
-      type: object
-    v1beta1.ListOperationsResponse:
-      properties:
-        next_page_token:
-          description: |-
-            Page Token to fetch the next page. The value can be used as
-            next_page_token in the next call to this endpoint. since the pagination is
-            cursor based the last page will be encountered when the next page token is
-            not set and the operations list is empty.
-          type: string
-        operations:
-          description: Operations matching the request
-          items:
-            $ref: '#/components/schemas/v1beta1.Operation'
-          maxItems: 100
-          type: array
-      title: ListOperationsResponse is the response of ListOperations
-      type: object
-    v1beta1.MTLSSpec:
-      description: MTLSSpec describes the mTLS configuration of a component.
-      properties:
-        ca_certificates_pem:
-          description: CA certificate in PEM format
-          example: |-
-            -----BEGIN CERTIFICATE-----
-            MII........
-            -----END CERTIFICATE-----
-          items:
-            type: string
-          type: array
-        enabled:
-          description: Enable mTLS
-          type: boolean
-        principal_mapping_rules:
-          description: Principal mapping rules for mTLS authentication. Only valid for Kafka API. See https://docs.redpanda.com/current/manage/security/authentication/#mtls.
-          example:
-            - RULE:.*CN=([^,]+).*/$1/
-          items:
-            type: string
-          type: array
-      type: object
-    v1beta1.Network:
-      description: Resource describing a Network.
-      properties:
-        cidr_block:
-          description: network CIDR from where public and private subnets are derived. At least a 21 bits CIDR is required.
-          type: string
-        cloud_provider:
-          $ref: '#/components/schemas/v1beta1.CloudProvider'
-        cluster_type:
-          $ref: '#/components/schemas/v1beta1.Cluster.Type'
         created_at:
           format: date-time
-          readOnly: true
           type: string
-        customer_managed_resources:
-          $ref: '#/components/schemas/v1beta1.Network.CustomerManagedResources'
         id:
-          description: ID of the network. ID is an output of CreateNetwork, and cannot be set by the caller.
-          readOnly: true
           type: string
-        name:
-          description: The unique name of the network.
-          example: development-network
+        role_name:
           type: string
-        namespace_id:
-          description: Namespace id of the network
-          example: a0b40af9-0250-48ca-9417-783ed127ce42
-          type: string
-        region:
-          title: The name of the region
-          type: string
-        state:
-          $ref: '#/components/schemas/v1beta1.Network.State'
+        scope:
+          $ref: '#/components/schemas/Scope'
         updated_at:
           format: date-time
-          readOnly: true
           type: string
-      required:
-        - name
-        - namespace_id
-        - cloud_provider
-        - region
-        - type
-      title: Network
       type: object
-    v1beta1.Network.CustomerManagedResources:
-      description: The cloud resources created by user.
+    v1alpha1.ServiceAccount:
       properties:
-        aws:
-          $ref: '#/components/schemas/v1beta1.Network.CustomerManagedResources.AWS'
-        gcp:
-          $ref: '#/components/schemas/v1beta1.Network.CustomerManagedResources.GCP'
-      type: object
-    v1beta1.Network.CustomerManagedResources.AWS:
-      description: The AWS resources managed by user.
-      properties:
-        dynamodb_table:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedDynamoDBTable'
-        management_bucket:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedAWSCloudStorageBucket'
-        private_subnets:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedAWSSubnets'
-        public_subnets:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedAWSSubnets'
-        vpc:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedAWSVPC'
-      required:
-        - management_bucket
-        - dynamodb_table
-        - vpc
-        - private_subnets
-        - public_subnets
-      title: AWS Customer Managed Resources
-      type: object
-    v1beta1.Network.CustomerManagedResources.GCP:
-      description: The GCP resources managed by user.
-      properties:
-        management_bucket:
-          $ref: '#/components/schemas/v1beta1.CustomerManagedGoogleCloudStorageBucket'
-        network_name:
-          title: |-
-            The name of network that is created by user, and Redpanda cluster is deployed to.
-            See GCP API: https://cloud.google.com/compute/docs/reference/rest/v1/networks
-          type: string
-        network_project_id:
-          description: The GCP project ID where the network is created.
-          type: string
-      required:
-        - network_name
-        - network_project_id
-        - management_bucket
-      title: GCP Customer Managed Resources
-      type: object
-    v1beta1.Network.State:
-      enum:
-        - STATE_CREATING
-        - STATE_READY
-        - STATE_DELETING
-        - STATE_DELETED
-        - STATE_FAILED
-      type: string
-    v1beta1.Operation:
-      description: Operation describes a long running operation
-      properties:
-        error:
-          $ref: '#/components/schemas/rpc.Status'
-        finished_at:
-          description: Timestamp when the operation has finished.
+        auth0_client_credentials:
+          $ref: '#/components/schemas/ServiceAccountCredentials'
+        created_at:
           format: date-time
+          type: string
+        description:
+          description: The description of the service_account.
+          example: CI bot account is used for CI workloads.
           type: string
         id:
-          description: ID of the operation.
-          readOnly: true
           type: string
-        metadata:
-          $ref: '#/components/schemas/OperationMetadata'
-        resource_id:
-          nullable: true
-          title: ID of the associated resource
+        name:
+          description: The unique name of the service account.
+          example: ci_bot
           type: string
-        response:
-          $ref: '#/components/schemas/OperationResponse'
-        started_at:
-          description: Timestamp when the operation has started.
+        updated_at:
           format: date-time
           type: string
-        state:
-          $ref: '#/components/schemas/v1beta1.Operation.State'
-        type:
-          $ref: '#/components/schemas/v1beta1.Operation.Type'
-      readOnly: true
-      title: Operation
-      type: object
-    v1beta1.Operation.State:
-      description: describes if the operation has finished, or is still in progress. Only if done is true, either error or result become available.
-      enum:
-        - STATE_IN_PROGRESS
-        - STATE_COMPLETED
-        - STATE_FAILED
-      type: string
-    v1beta1.Operation.Type:
-      enum:
-        - TYPE_CREATE_CLUSTER
-        - TYPE_UPDATE_CLUSTER
-        - TYPE_DELETE_CLUSTER
-        - TYPE_CREATE_NETWORK
-        - TYPE_DELETE_NETWORK
-      type: string
-    v1beta1.UpdateClusterMetadata:
-      description: Resource describing an in-progress UpdateCluster Operation.
-      title: UpdateClusterMetadata
       type: object
     v1beta2.CloudProvider:
       description: Cloud provider where resources are created.
@@ -2625,6 +2094,8 @@ components:
             Note: The value of a network tag will be ignored.
             See the details on network tags at https://cloud.google.com/vpc/docs/add-remove-network-tags.
           type: object
+        cluster_configuration:
+          $ref: '#/components/schemas/Cluster.ClusterConfiguration'
         connection_type:
           $ref: '#/components/schemas/v1beta2.Cluster.ConnectionType'
         connectivity:
@@ -3326,6 +2797,687 @@ info:
   version: v1beta2
 openapi: 3.0.3
 paths:
+  /v1alpha1/role-bindings:
+    get:
+      description: List role assignments to organization users.
+      operationId: RoleBindingService_ListRoleBindings
+      parameters:
+        - in: query
+          name: filter.role_name
+          schema:
+            type: string
+        - in: query
+          name: filter.account
+          schema:
+            type: string
+        - in: query
+          name: filter.scope.resource_type
+          schema:
+            enum:
+              - SCOPE_RESOURCE_TYPE_RESOURCE_GROUP
+              - SCOPE_RESOURCE_TYPE_NETWORK
+              - SCOPE_RESOURCE_TYPE_CLUSTER
+              - SCOPE_RESOURCE_TYPE_SERVERLESS_CLUSTER
+              - SCOPE_RESOURCE_TYPE_NETWORK_PEERING
+              - SCOPE_RESOURCE_TYPE_ORGANIZATION
+            type: string
+        - in: query
+          name: filter.scope.resource_id
+          schema:
+            type: string
+        - in: query
+          name: filter.account_ids
+          schema:
+            items:
+              type: string
+            type: array
+        - in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - in: query
+          name: page_token
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListRoleBindingsResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List Role Bindings
+      tags:
+        - Control Plane Role Bindings
+    post:
+      description: Create a Redpanda Cloud role binding.
+      operationId: RoleBindingService_CreateRoleBinding
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleBindingRequest'
+        description: CreateRoleBindingRequest is the request of CreateRoleBinding.
+        required: true
+        x-originalParamName: body
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1alpha1.RoleBinding'
+          description: RoleBinding Created
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Create Role Binding
+      tags:
+        - Control Plane Role Bindings
+  /v1alpha1/role-bindings/{id}:
+    delete:
+      description: Delete Redpanda Cloud role binding.
+      operationId: RoleBindingService_DeleteRoleBinding
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          content:
+            application/json:
+              schema: {}
+          description: RoleBinding was deleted successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Delete Role Binding
+      tags:
+        - Control Plane Role Bindings
+    get:
+      description: Get Redpanda role binding.
+      operationId: RoleBindingService_GetRoleBinding
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1alpha1.RoleBinding'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get Role Binding
+      tags:
+        - Control Plane Role Bindings
+  /v1alpha1/service-accounts:
+    get:
+      description: List service accounts in your organization.
+      operationId: ServiceAccountService_ListServiceAccounts
+      parameters:
+        - in: query
+          name: filter.name
+          schema:
+            type: string
+        - in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - in: query
+          name: page_token
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListServiceAccountsResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List Service Accounts
+      tags:
+        - Control Plane Service Accounts
+    post:
+      description: Create a Redpanda Cloud ServiceAccount.
+      operationId: ServiceAccountService_CreateServiceAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateServiceAccountRequest'
+        description: CreateServiceAccountRequest is the request of CreateServiceAccount.
+        required: true
+        x-originalParamName: body
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateServiceAccountResponse'
+          description: ServiceAccount Created
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Create Service Account
+      tags:
+        - Control Plane Service Accounts
+  /v1alpha1/service-accounts/{id}:
+    delete:
+      description: Delete a service account.
+      operationId: ServiceAccountService_DeleteServiceAccount
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          content:
+            application/json:
+              schema: {}
+          description: ServiceAccount was deleted successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Delete Service Account
+      tags:
+        - Control Plane Service Accounts
+    get:
+      description: Get service account details.
+      operationId: ServiceAccountService_GetServiceAccount
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get Service Account
+      tags:
+        - Control Plane Service Accounts
+    patch:
+      description: Update a Redpanda Cloud service account.
+      operationId: ServiceAccountService_UpdateServiceAccount
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateServiceAccountBody'
+        required: true
+        x-originalParamName: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1alpha1.ServiceAccount'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Update Service Account
+      tags:
+        - Control Plane Service Accounts
+  /v1alpha1/service-accounts/{id}/credentials:
+    get:
+      description: Get Redpanda service account credentials.
+      operationId: ServiceAccountService_GetServiceAccountCredentials
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceAccountCredentials'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get Service Account Credentials
+      tags:
+        - Control Plane Service Accounts
+  /v1alpha1/user-invites:
+    get:
+      description: List user invites to your Redpanda Cloud organization.
+      operationId: UserInviteService_ListUserInvites
+      parameters:
+        - in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - in: query
+          name: page_token
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUserInvitesResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List User Invites
+      tags:
+        - User invites
+    post:
+      description: Create a Redpanda Cloud user invite.
+      operationId: UserInviteService_CreateUserInvite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserInviteRequest'
+        required: true
+        x-originalParamName: body
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInvite'
+          description: UserInvite Created
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Create User Invite
+      tags:
+        - User invites
+  /v1alpha1/user-invites/{id}:
+    delete:
+      description: Delete Redpanda Cloud User from the organization.
+      operationId: UserInviteService_DeleteUserInvite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          content:
+            application/json:
+              schema: {}
+          description: User was deleted from the organization successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Delete User from the organization
+      tags:
+        - User invites
+    get:
+      description: Get Redpanda user invite.
+      operationId: UserInviteService_GetUserInvite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInvite'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get User Invite
+      tags:
+        - User invites
+    patch:
+      description: Update a Redpanda Cloud user invite.
+      operationId: UserInviteService_UpdateUserInvite
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInviteBody'
+        required: true
+        x-originalParamName: body
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInvite'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Update UserInvite
+      tags:
+        - User invites
+  /v1alpha1/users:
+    get:
+      description: List Redpanda Cloud Users.
+      operationId: UserService_ListUsers
+      parameters:
+        - in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - in: query
+          name: page_token
+          schema:
+            type: string
+        - in: query
+          name: read_mask
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUsersResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List Users
+      tags:
+        - Control Plane Users
+  /v1alpha1/users/{id}:
+    delete:
+      description: Delete Redpanda Cloud user from the organization.
+      operationId: UserService_DeleteUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          content:
+            application/json:
+              schema: {}
+          description: User was deleted from the organization successfully
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Delete User
+      tags:
+        - Control Plane Users
+    get:
+      description: Get Redpanda Cloud user.
+      operationId: UserService_GetUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: read_mask
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Ok
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get User
+      tags:
+        - Control Plane Users
   /v1beta2/clusters:
     get:
       description: List Redpanda clusters. The `filter.` query string parameters find matching clusters that meet all specified conditions.
@@ -3381,6 +3533,7 @@ paths:
                 clusters:
                   - cloud_provider: CLOUD_PROVIDER_GCP
                     cloud_provider_tags: {}
+                    cluster_configuration: null
                     connection_type: CONNECTION_TYPE_PUBLIC
                     connectivity: null
                     created_at: "2023-01-01T00:00:00Z"
@@ -3437,7 +3590,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: List Clusters
       tags:
-        - ClusterService
+        - Clusters
     post:
       description: Create a Redpanda cluster. Returns a long-running operation. Call `GET /v1beta2/operations/{id}` to check operation state. Refer to [Regions](https://docs.redpanda.com/api/cloud-api.html#api-description) for the list of available regions, zones, and tiers combinations for each cloud provider. For BYOC clusters, follow additional steps to [create a BYOC cluster](https://docs.redpanda.com/current/deploy/deployment-option/cloud/api/cloud-controlplane-api/#additional-steps-to-create-a-byoc-cluster).
       operationId: ClusterService_CreateCluster
@@ -3525,7 +3678,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Create Cluster
       tags:
-        - ClusterService
+        - Clusters
   /v1beta2/clusters/{cluster.id}:
     patch:
       description: Update a Redpanda cluster.
@@ -3569,6 +3722,8 @@ paths:
                     Note: The value of a network tag will be ignored.
                     See the details on network tags at https://cloud.google.com/vpc/docs/add-remove-network-tags.
                   type: object
+                cluster_configuration:
+                  $ref: '#/components/schemas/ClusterUpdate.ClusterConfiguration'
                 customer_managed_resources:
                   $ref: '#/components/schemas/CustomerManagedResourcesUpdate'
                 gcp_private_service_connect:
@@ -3592,6 +3747,8 @@ paths:
                   type: array
                 schema_registry:
                   $ref: '#/components/schemas/SchemaRegistrySpec'
+              required:
+                - cluster
               title: ClusterUpdate
               type: object
         description: |-
@@ -3631,7 +3788,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Update Cluster
       tags:
-        - ClusterService
+        - Clusters
   /v1beta2/clusters/{id}:
     delete:
       description: Delete a Redpanda Cluster. Returns a long-running operation. Call `GET /v1beta2/operations/{id}` to check operation state.
@@ -3674,7 +3831,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Delete Cluster
       tags:
-        - ClusterService
+        - Clusters
     get:
       description: Get information about a Redpanda cluster.
       operationId: ClusterService_GetCluster
@@ -3693,6 +3850,7 @@ paths:
                 cluster:
                   cloud_provider: CLOUD_PROVIDER_GCP
                   cloud_provider_tags: {}
+                  cluster_configuration: null
                   connection_type: CONNECTION_TYPE_PUBLIC
                   connectivity: null
                   created_at: "2023-01-01T00:00:00Z"
@@ -3754,7 +3912,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Get Cluster
       tags:
-        - ClusterService
+        - Clusters
   /v1beta2/networks:
     get:
       description: List Redpanda Networks.
@@ -3827,7 +3985,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: List Networks
       tags:
-        - NetworkService
+        - Networks
     post:
       description: Create a Redpanda network. Returns a [long-running operation](https://docs.redpanda.com/current/deploy/deployment-option/cloud/api/cloud-controlplane-api/#long-running-operations). Call `GET /v1beta2/operations/{id}` to check operation state.
       operationId: NetworkService_CreateNetwork
@@ -3883,7 +4041,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Create Network
       tags:
-        - NetworkService
+        - Networks
   /v1beta2/networks/{id}:
     delete:
       description: Delete a Redpanda network.
@@ -3926,7 +4084,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Delete Network
       tags:
-        - NetworkService
+        - Networks
     get:
       description: Get information about a Redpanda network.
       operationId: NetworkService_GetNetwork
@@ -3973,7 +4131,7 @@ paths:
           description: Internal Server Error. Please reach out to support.
       summary: Get Network
       tags:
-        - NetworkService
+        - Networks
   /v1beta2/operations:
     get:
       description: List operations. This is a generic endpoint and can be used to list any type of operation.
@@ -4045,7 +4203,7 @@ paths:
           description: An unexpected error response.
       summary: List Operations
       tags:
-        - OperationService
+        - Operations
   /v1beta2/operations/{id}:
     get:
       description: Get information about a long-running operation. This is a generic endpoint and can be used to retrieve any type of operation.
@@ -4077,6 +4235,7 @@ paths:
                         cluster:
                           cloud_provider: CLOUD_PROVIDER_GCP
                           cloud_provider_tags: {}
+                          cluster_configuration: null
                           connection_type: CONNECTION_TYPE_PUBLIC
                           connectivity: null
                           created_at: "2023-01-01T00:00:00Z"
@@ -4191,6 +4350,7 @@ paths:
                         cluster:
                           cloud_provider: CLOUD_PROVIDER_GCP
                           cloud_provider_tags: {}
+                          cluster_configuration: null
                           connection_type: CONNECTION_TYPE_PUBLIC
                           connectivity: null
                           created_at: "2023-01-01T00:00:00Z"
@@ -4257,7 +4417,70 @@ paths:
           description: An unexpected error response.
       summary: Get Operation
       tags:
-        - OperationService
+        - Operations
+  /v1beta2/organizations/available:
+    get:
+      description: Get a list of available organizations for the user.
+      operationId: OrganizationService_ListAvailableOrganizations
+      parameters:
+        - in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - description: Value of the next_page_token field returned by the previous response. If not provided, the system assumes the first page is requested.
+          in: query
+          name: page_token
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAvailableOrganizationsResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Please reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List available organizations for the user
+      tags:
+        - Organization
+  /v1beta2/organizations/current:
+    get:
+      description: Get current organizarion information
+      operationId: OrganizationService_GetCurrentOrganization
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCurrentOrganizationResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Please reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get current organization
+      tags:
+        - Organization
   /v1beta2/regions/{cloud_provider}:
     get:
       description: List available regions on the different cloud providers
@@ -4311,7 +4534,7 @@ paths:
           description: An unexpected error response.
       summary: List Redpanda regions
       tags:
-        - RegionService
+        - Regions
   /v1beta2/regions/{cloud_provider}/{name}:
     get:
       description: Get information about a Redpanda region.
@@ -4358,7 +4581,7 @@ paths:
           description: An unexpected error response.
       summary: Get region by name
       tags:
-        - RegionService
+        - Regions
   /v1beta2/resource-groups:
     get:
       description: List Redpanda resource groups. The `filter.` query string parameter finds resource groups that match the provided name.
@@ -4407,7 +4630,7 @@ paths:
           description: Internal Server Error. Reach out to support.
       summary: List Resource Groups
       tags:
-        - ResourceGroupService
+        - Resource Groups
     post:
       description: Create a Redpanda Resource Group.
       operationId: ResourceGroupService_CreateResourceGroup
@@ -4441,7 +4664,7 @@ paths:
           description: Internal Server Error. Reach out to support.
       summary: Create Resource Group
       tags:
-        - ResourceGroupService
+        - Resource Groups
   /v1beta2/resource-groups/{id}:
     delete:
       description: Delete the specified Redpanda resource group.
@@ -4468,7 +4691,7 @@ paths:
           description: Not Found
       summary: Delete Resource Group
       tags:
-        - ResourceGroupService
+        - Resource Groups
     get:
       description: Get information about a specific Redpanda resource group.
       operationId: ResourceGroupService_GetResourceGroup
@@ -4507,7 +4730,7 @@ paths:
           description: Internal Server Error. Reach out to support.
       summary: Get Resource Group
       tags:
-        - ResourceGroupService
+        - Resource Groups
   /v1beta2/resource-groups/{resource_group.id}:
     patch:
       description: Update a Redpanda resource group.
@@ -4567,7 +4790,7 @@ paths:
           description: Internal Server Error. Reach out to support.
       summary: Update Resource Group
       tags:
-        - ResourceGroupService
+        - Resource Groups
   /v1beta2/serverless/clusters:
     get:
       description: List Redpanda Serverless clusters. The `filter.` query string parameters find matching clusters that meet all specified conditions.
@@ -4642,7 +4865,7 @@ paths:
           description: An unexpected error response.
       summary: List Serverless Clusters
       tags:
-        - ServerlessClusterService
+        - Serverless Clusters
     post:
       description: Create a Redpanda Serverless cluster. Returns a long-running operation. Call `GET /v1beta2/operations/{id}` to check operation state.
       operationId: ServerlessClusterService_CreateServerlessCluster
@@ -4686,7 +4909,7 @@ paths:
           description: An unexpected error response.
       summary: Create Serverless Cluster
       tags:
-        - ServerlessClusterService
+        - Serverless Clusters
   /v1beta2/serverless/clusters/{id}:
     delete:
       description: Delete Redpanda Serverless cluster. Returns a long-running operation. Call `GET /v1beta2/operations/{id}` to check operation state.
@@ -4725,7 +4948,7 @@ paths:
           description: An unexpected error response.
       summary: Delete Serverless Cluster
       tags:
-        - ServerlessClusterService
+        - Serverless Clusters
     get:
       description: Get Redpanda Serverless cluster.
       operationId: ServerlessClusterService_GetServerlessCluster
@@ -4763,7 +4986,7 @@ paths:
           description: An unexpected error response.
       summary: Get Serverless Cluster
       tags:
-        - ServerlessClusterService
+        - Serverless Clusters
   /v1beta2/serverless/region:
     get:
       description: Get Redpanda Serverless region.
@@ -4804,7 +5027,7 @@ paths:
           description: An unexpected error response.
       summary: Get ServerlessRegion
       tags:
-        - ServerlessRegionService
+        - Serverless Regions
   /v1beta2/serverless/regions:
     get:
       description: List Redpanda Serverless regions.
@@ -4851,7 +5074,103 @@ paths:
           description: An unexpected error response.
       summary: List ServerlessRegions
       tags:
-        - ServerlessRegionService
+        - Serverless Regions
+  /v1beta2/tiers:
+    get:
+      description: List available tiers for the different cloud providers.
+      operationId: ThroughputTierService_ListThroughputTiers
+      parameters:
+        - in: query
+          name: filter.cloud_provider
+          schema:
+            enum:
+              - CLOUD_PROVIDER_AWS
+              - CLOUD_PROVIDER_GCP
+              - CLOUD_PROVIDER_AZURE
+            type: string
+        - in: query
+          name: filter.cluster_type
+          schema:
+            enum:
+              - TYPE_DEDICATED
+              - TYPE_BYOC
+            type: string
+        - in: query
+          name: filter.region
+          schema:
+            type: string
+        - description: Limit the paginated response to a number of items.
+          in: query
+          name: page_size
+          schema:
+            format: int32
+            type: integer
+        - description: Value of the `next_page_token` field returned by the previous response. If not provided, the system assumes the first page is requested.
+          in: query
+          name: page_token
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListThroughputTiersResponse'
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Please reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: List Tiers
+      tags:
+        - Redpanda Tiers
+  /v1beta2/tiers/{name}:
+    get:
+      description: Get information about a Redpanda tier.
+      operationId: ThroughputTierService_GetThroughputTier
+      parameters:
+        - description: Unique name of tier.
+          in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetThroughputTierResponse'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: Internal Server Error. Please reach out to support.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rpc.Status'
+          description: An unexpected error response.
+      summary: Get Tier
+      tags:
+        - Redpanda Tiers
 security:
   - auth0: []
 servers:
@@ -4859,15 +5178,28 @@ servers:
     url: https://api.redpanda.com
 tags:
   - description: Check the state of [long-running operations](https://docs.redpanda.com/current/deploy/deployment-option/cloud/api/cloud-controlplane-api/#long-running-operations).
-    name: OperationService
+    name: Operations
   - description: Manage Redpanda Cloud clusters. For detailed steps and information, see [Manage Clusters using the Cloud API](https://docs.redpanda.com/current/deploy/deployment-option/cloud/api/cloud-controlplane-api/).
-    name: ClusterService
+    name: Clusters
   - description: Manage Redpanda Cloud networks.
-    name: NetworkService
-  - name: RegionService
+    name: Networks
+  - description: Region Service provides information about available Redpanda regions.
+    name: Regions
   - description: Manage Redpanda Cloud resource groups.
-    name: ResourceGroupService
+    name: Resource Groups
   - description: Manage [Redpanda Serverless](https://docs.redpanda.com/current/deploy/deployment-option/cloud/serverless/) clusters. For detailed steps, see [Use the Control Plane API with Serverless](https://docs.redpanda.com/current/deploy/deployment-option/cloud/api/cloud-serverless-controlplane-api/).
-    name: ServerlessClusterService
+    name: Serverless Clusters
   - description: See available Redpanda Serverless regions.
-    name: ServerlessRegionService
+    name: Serverless Regions
+  - description: Get information about available Redpanda cluster tiers.
+    name: Redpanda Tiers
+  - description: Manage role bindings for your cloud organization users.
+    name: Control Plane Role Bindings
+  - description: Manage Redpanda Cloud service accounts.
+    name: Control Plane Service Accounts
+  - description: Manage Redpanda Cloud organization users.
+    name: Control Plane Users
+  - description: Manage user invites for your organization.
+    name: User invites
+  - description: See information about the organization the current user belongs to.
+    name: Organization
