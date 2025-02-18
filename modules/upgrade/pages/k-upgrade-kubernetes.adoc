@@ -1,93 +1,481 @@
-= Upgrade Kubernetes on Worker Nodes
-:description: Learn how to update the Kubernetes control plane and worker nodes to a new version.
+= Upgrade Kubernetes on Nodes Running Redpanda
+:description: Learn how to upgrade your Kubernetes control plane and worker nodes while ensuring that Redpanda remains fault tolerant and data safe.
 :page-aliases: manage:kubernetes/upgrade-kubernetes.adoc, manage:kubernetes/k-upgrade-kubernetes.adoc
 :page-categories: Management, Upgrades
 :env-kubernetes: true
 
-Upgrading the Kubernetes version in a cluster ensures that your infrastructure is up to date and secure. This process involves updating the Kubernetes control plane and worker nodes to a new version while also making sure that the Redpanda cluster continues to function with minimal downtime.
+Upgrading the Kubernetes version in a cluster ensures that your infrastructure is up to date and secure. This process involves updating the Kubernetes control plane and worker nodes while ensuring that your Redpanda cluster remains available and protected from data loss.
 
 == Prerequisites
 
 * A staging environment in which to test the upgrade procedure before performing it in production.
 * A running Redpanda deployment on a Kubernetes cluster.
-* Familiarity with your hosting platform (GKE, EKS, AKS, or self-managed) and any CLI tools your platform provides, such as `gcloud` or `eksctl`.
+* Familiarity with your hosting platform (GKE, EKS, AKS, or self-managed) and any CLI tools your platform provides. For example, `gcloud` or `eksctl`.
 * Confirmation that the new version of Kubernetes is compatible with the version of Redpanda you are using. See the xref:reference:k-redpanda-helm-spec.adoc#requirements[Helm chart requirements].
-* <<Upgrade the Redpanda Helm chart>>.
+* Upgraded Redpanda Helm chart to the latest version. See the next section.
 
 === Upgrade the Redpanda Helm chart
 
-Before upgrading Kubernetes, upgrade your Redpanda Helm chart to the latest version. Upgrading the chart ensures that older versions of Kubernetes resources are replaced by newer versions. Failing to do so might lead to Helm encountering deprecated versions during the Kubernetes upgrade, resulting in errors and potential downtime.
+Before upgrading Kubernetes, always upgrade your Redpanda Helm chart to the latest version. Doing this ensures that any deprecated Kubernetes resources (for example, the `v1beta1` PodDisruptionBudget in Kubernetes 1.25) are replaced with updated ones. If you skip this step, Helm may fail during or after the Kubernetes upgrade.
 
-For example, starting in Kubernetes 1.25 and later, the `v1beta1` version of the PodDisruptionBudget resource is deprecated. If you were running a previous version of Kubernetes and you performed a Helm upgrade after updating Kubernetes, Helm would carry out a 3-way merge between the desired state, the previous state, and the current state of your cluster. If your cluster's previous state still referenced the `v1beta1` resource version, Helm would fail to upgrade as this version isn't available in your version of Kubernetes.
+For more details, see xref:upgrade:k-rolling-upgrade.adoc[].
 
-See xref:upgrade:k-rolling-upgrade.adoc[].
+== Choose your storage strategy
 
-== Minimize data loss and downtime during Kubernetes upgrades
+When upgrading a node, Kubernetes restarts or replaces that node's underlying virtual machine, which can cause temporary unavailability of any Pods scheduled on that node.
 
-Upgrading the Kubernetes version involves updating Kubernetes components and other dependencies, which requires node restarts. To minimize data loss and downtime during the upgrade process, you must take precautions. This section outlines essential information on how the Helm chart helps maintain high availability and what steps you can take to avoid data loss, depending on the type of storage volumes that you use.
+To avoid data loss, choose an upgrade procedure based on where your Redpanda data resides:
 
-The Helm chart provides the following features to minimize data loss and downtime during the upgrade process:
+* <<networked-pv, Networked PersistentVolumes>>. For example, EBS on AWS, Persistent Disks on GCP, or Azure Disks on Azure.
+* <<local-pv, Ephemeral local storage>>. For example, local PersistentVolumes, `hostPath`, or `emptyDir`.
 
-* A Pod Disruption Budget (PDB) that limits the number of concurrently unavailable Pods within the StatefulSet, ensuring the desired level of redundancy. Hosting platforms such as EKS and GKE respect the PDB during node upgrades, providing a safer upgrade process. For the default PDB, see xref:reference:k-redpanda-helm-spec.adoc#statefulsetbudgetmaxunavailable[`budget.maxUnavailable`] in the Helm chart.
-* Graceful shutdowns for all Pods within the StatefulSet to reduce potential data corruption.
+[[networked-pv]]
+=== If you use PersistentVolumes with network-backed storage
 
-Depending on your type of storage volume, you must take precautions to ensure your deployment can tolerate node restarts and avoid data loss:
+PersistentVolumes (PVs) that rely on a networked storage backend decouple your Redpanda data from a specific node. As a result, you can safely upgrade nodes without the risk of losing data stored locally on the node.
 
-=== PersistentVolumes
-
-If you use PersistentVolumes (PV) to store the Redpanda data directory, take the following precautions:
-
-* Verify compatibility between your storage classes and PersistentVolumes (PV) configurations with the new Kubernetes version.
-* If you use local PVs, your data is bound to the node where the PV is created, risking data loss during node deletions or failures. To minimize the risk of data loss, see <<best-practices-for-local-storage,Best practices for local storage>>.
-+
-Data in remote PVs remains safe during upgrades, as the PV is decoupled from the worker nodes.
-
-=== `hostPath`
-
-Data in `hostPath` volumes is bound to a specific node, risking data loss during node deletions or failures. To minimize the risk of data loss, see <<best-practices-for-local-storage,Best practices for local storage>>.
-
-=== `emptyDir`
-
-Data in `emptyDir` volumes is ephemeral and will be lost when the container is terminated or the node is deleted. To minimize the risk of data loss, see <<best-practices-for-local-storage,Best practices for local storage>>.
-
-=== Best practices for local storage
-
-When using local storage (local PV, `hostPath`, or `emptyDir`), data loss can occur during Kubernetes upgrades. To minimize the risk of data loss, follow these best practices before you upgrade:
-
-* *Replicate all topics*: If you have topics with a replication factor of 1, temporarily increase the replication factor of those topics before you upgrade. A replication factor of at least 2 ensures that even if one node experiences data loss, you can still recover the data from a replica on another node. See xref:reference:rpk/rpk-topic/rpk-topic-alter-config.adoc[`rpk topic alter-config`].
+. Confirm that a safe Pod Disruption Budget (PDB) exists for your Redpanda StatefulSet. One is created by default in xref:reference:k-redpanda-helm-spec.adoc#statefulsetbudgetmaxunavailable[`budget.maxUnavailable`].
 +
 [,bash]
 ----
-rpk topic alter-config [<topic-name>,] --set replication.factor=<replication-factor>
+kubectl get pdb --namespace <namespace>
 ----
 +
-After increasing the replication factor, xref:manage:kubernetes/monitoring/index.adoc#under-replicated-partitions[monitor for under-replicated partitions] and wait until all partitions are replicated.
-
-* *Delete PersistentVolumeClaims (PVCs)*: If you are using local PVs in Kubernetes, make sure to delete the PVC before upgrading the worker node. Otherwise, your Pods will remain in a pending state when they are rescheduled because the PVs are bound to the node through node affinity.
+Example output:
 +
-NOTE: Deleting a PVC does not remove it from the system immediately. Instead, a `deletionTimestamp` is set on the PVC, but it will not be deleted until the associated Pod is terminated.
-* *Decommission brokers*: Decommission the broker on the worker node planned for an upgrade. Decommissioning helps prevent data loss by gracefully moving the broker's topic partitions and replicas to other brokers in the cluster. See xref:manage:kubernetes/k-decommission-brokers.adoc[Decommission Brokers].
+[.no-copy]
+----
+NAME       MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+redpanda   N/A             1                 1                     2m36s
+----
++
+A PDB limits the number of Pods that can be down simultaneously, preserving quorum and minimizing downtime. In 3-broker clusters, make sure that `maxUnavailable` is `1`. For larger clusters, ensure at least a majority of brokers remain available. For example, `minAvailable` should be set to `floor(N/2)+1`, where `N` is the total number of brokers in the cluster.
 
-== Upgrade Kubernetes on your hosting platform
+. Check your replication factor:
++
+[,bash]
+----
+rpk topic describe <topic-name>
+rpk topic alter-config <topic-name> --set replication.factor=<replication-factor>
+----
++
+Ensure each topic has a replication factor of at least 3. If you have topics with a replication factor of 1, increase it using xref:reference:rpk/rpk-topic/rpk-topic-alter-config.adoc[`rpk topic alter-config`] and wait for all under-replicated partitions to become fully replicated.
++
+If you increased the replication factor, xref:manage:kubernetes/monitoring/index.adoc#under-replicated-partitions[monitor for under-replicated partitions] and wait until all partitions are replicated.
 
-In this section, you can find helpful resources for upgrading Kubernetes on different hosting platforms.
+. Make sure that both the NodeWatcher and Decommission controllers are disabled before you drain and upgrade. This step avoids unintentional rebalancing or decommission events during node drain.
++
+[tabs]
+======
+Helm + Operator::
++
+--
 
-Before you upgrade, make sure that you've read the <<prerequisites,prerequisites>> and the section on <<minimize-data-loss-and-downtime-during-kubernetes-upgrades,minimizing data loss and downtime>>.
+- If you installed the controllers as part of the Redpanda Operator, remove them from your operator configuration.
++
+[,bash,subs="attributes+"]
+----
+helm upgrade --install redpanda-controller redpanda/operator \
+  --namespace <namespace> \
+  --set image.tag={latest-operator-version} \
+  --create-namespace \
+  --set additionalCmdFlags={} \
+----
 
-For all hosting platforms, you must upgrade the control plane first. Control plane components are backward-compatible with older worker node versions. Some hosting platforms may upgrade the control plane for you automatically.
+- If you installed the controllers as sidecars in your Redpanda resource:
++
+[loweralpha]
+. Remove them from your Redpanda custom resource definition:
++
+```yaml
+apiVersion: cluster.redpanda.com/v1alpha2
+kind: Redpanda
+metadata:
+  name: redpanda
+spec:
+  chartRef: {}
+  clusterSpec:
+    statefulset:
+      sideCars:
+        controllers:
+          enabled: false
+          run: []
+```
 
-Before you upgrade a worker node, make sure that it is cordoned to prevent new Pods from being scheduled on it. Then, make sure that it is drained to ensure that any running Pods are safely evicted before the upgrade. The eviction process minimizes the risk of data loss or corruption by triggering a graceful shutdown of the Pods.
+. Redeploy your Redpanda resource:
++
+```bash
+kubectl apply -f redpanda-cluster.yaml --namespace <namespace>
+```
 
+--
+Helm::
++
+--
+If you enabled the controllers in the Redpanda Helm chart directly (rather than through the operator):
+
+[loweralpha]
+. Edit or remove the settings for the `controllers` sidecar in your Helm values or command-line overrides. For example, if you used a YAML values file:
++
+.`remove-controllers.yaml`
+[,yaml]
+----
+statefulset:
+  sideCars:
+    controllers:
+      enabled: false
+      run: []
+rbac:
+  enabled: false
+----
+
+. Run `helm upgrade` to apply the changes.
+
+--
+======
+
+. https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/[Cordon and drain the node^] so that no new Redpanda Pods are scheduled there and existing Redpanda Pods are gracefully evicted.
++
+[,bash]
+----
+kubectl get nodes -o wide
+kubectl cordon <node-name>
+kubectl drain <node-name>
+----
+
+. Upgrade the node.
++
+Below are links to documentation from major hosting platforms describing how to upgrade Kubernetes:
++
 * https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster[Upgrade on GKE (Google Kubernetes Engine)^]
 * https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html[Upgrade on EKS (Elastic Kubernetes Service)^]
 * https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster?tabs=azure-cli[Upgrade on AKS (Azure Kubernetes Service)^]
 * https://kubernetes.io/docs/tasks/administer-cluster/cluster-upgrade/[Upgrade on Self-Managed^]
 
-After completing the upgrade process, verify the health of your Redpanda deployment and ensure that data has been retained as expected.
+. Wait for the node to come back.
++
+[,bash]
+----
+kubectl wait --for=condition=Ready node/<node-name> --timeout=300s
+----
++
+Because your data resides on networked storage, the Redpanda Pods will reschedule and reconnect to the existing PV.
+
+. If you disabled the NodeWatcher or Decommission controllers in step 3, re-enable them. For example, to re-enable both:
++
+[tabs]
+======
+Helm + Operator::
++
+--
+
+[,bash,subs="attributes+"]
+----
+helm upgrade --install redpanda-controller redpanda/operator \
+  --namespace <namespace> \
+  --set image.tag={latest-operator-version} \
+  --create-namespace \
+  --set additionalCmdFlags={--additional-controllers="nodeWatcher","decommission"} \
+----
+
+Or:
+
+```yaml
+apiVersion: cluster.redpanda.com/v1alpha2
+kind: Redpanda
+metadata:
+  name: redpanda
+spec:
+  chartRef: {}
+  clusterSpec:
+    statefulset:
+      sideCars:
+        controllers:
+          enabled: true
+          run:
+            - "nodeWatcher"
+            - "decommission"
+```
+
+--
+Helm::
++
+--
+.`enable-controllers.yaml`
+[,yaml]
+----
+statefulset:
+  sideCars:
+    controllers:
+      enabled: true
+      run:
+        - "nodeWatcher"
+        - "decommission"
+----
+
+Run `helm upgrade` to apply the changes.
+
+--
+======
+
+. Verify cluster health.
++
+Use your monitoring stack or `rpk cluster health` to verify that all brokers are online and that data replication is healthy.
+
+With network-backed storage, your Redpanda data volumes remain intact and available when a node goes offline. After a node reboots or a new node is brought up, the PV reattaches, ensuring your Redpanda cluster can recover without data loss.
+
+[[local-pv]]
+=== If you use ephemeral storage (local PV, `hostPath`, or `emptyDir`)
+
+Ephemeral storage binds Redpanda data to the local disks of a specific node. When that node is upgraded or replaced, its local storage is typically lost. To protect your data and maintain fault tolerance, follow these steps.
+
+Here's a high-level overview of the node upgrade procedure when you use ephemeral storage:
+
+[mermaid]
+....
+flowchart TB
+
+%% Define classes
+classDef userAction stroke:#374D7C, fill:#E2EBFF, font-weight:bold,rx:5,ry:5
+classDef systemAction fill:#F6FBF6,stroke:#25855a,stroke-width:2px,color:#20293c,rx:5,ry:5
+
+%% -- LEGEND SUBGRAPH --
+subgraph Legend
+  direction TB
+  UA([User Action]):::userAction
+  SE([System Event]):::systemAction
+end
+
+%% -- MAIN FLOWCHART --
+A((Start)):::systemAction --> B["Check PDB and replication factor (≥3)"]:::userAction
+B --> C["Decommission broker"]:::userAction
+C --> D["Data migrates to other replicas"]:::systemAction
+D --> E["Delete PVC (local PV)"]:::userAction
+E --> F["Cordon and drain node"]:::userAction
+F --> G["Broker shuts down"]:::systemAction
+G --> H["Upgrade node"]:::userAction
+H --> I["New broker Pod and new PVC (local PV)"]:::systemAction
+I --> J["Data rebalances"]:::systemAction
+J --> K((Cluster healthy)):::systemAction
+....
+
+. Confirm that a safe Pod Disruption Budget (PDB) exists for your Redpanda StatefulSet. One is created by default in xref:reference:k-redpanda-helm-spec.adoc#statefulsetbudgetmaxunavailable[`budget.maxUnavailable`].
++
+[,bash]
+----
+kubectl get pdb --namespace <namespace>
+----
++
+Example output:
++
+[.no-copy]
+----
+NAME       MIN AVAILABLE   MAX UNAVAILABLE   ALLOWED DISRUPTIONS   AGE
+redpanda   N/A             1                 1                     2m36s
+----
++
+A PDB limits the number of Pods that can be down simultaneously, preserving quorum and minimizing downtime. In 3-broker clusters, make sure that `maxUnavailable` is `1`. For larger clusters, ensure at least a majority of brokers remain available. For example, `minAvailable` should be set to `floor(N/2)+1`, where `N` is the total number of brokers in the cluster.
+
+. Check your replication factor:
++
+[,bash]
+----
+rpk topic describe <topic-name>
+rpk topic alter-config <topic-name> --set replication.factor=<replication-factor>
+----
++
+Ensure each topic has a replication factor of at least 3. If you have topics with a replication factor of 1, increase it using xref:reference:rpk/rpk-topic/rpk-topic-alter-config.adoc[`rpk topic alter-config`] and wait for all under-replicated partitions to become fully replicated.
++
+If you increased the replication factor, xref:manage:kubernetes/monitoring/index.adoc#under-replicated-partitions[monitor for under-replicated partitions] and wait until all partitions are replicated.
+
+. Make sure that both the NodeWatcher and Decommission controllers are disabled before you drain and upgrade. This step avoids unintentional rebalancing or decommission events during node drain.
++
+[tabs]
+======
+Helm + Operator::
++
+--
+
+- If you installed the controllers as part of the Redpanda Operator, remove them from your operator configuration.
++
+[,bash,subs="attributes+"]
+----
+helm upgrade --install redpanda-controller redpanda/operator \
+  --namespace <namespace> \
+  --set image.tag={latest-operator-version} \
+  --create-namespace \
+  --set additionalCmdFlags={} \
+----
+
+- If you installed the controllers as sidecars in your Redpanda resource:
++
+[loweralpha]
+. Remove them from your Redpanda custom resource definition:
++
+```yaml
+apiVersion: cluster.redpanda.com/v1alpha2
+kind: Redpanda
+metadata:
+  name: redpanda
+spec:
+  chartRef: {}
+  clusterSpec:
+    statefulset:
+      sideCars:
+        controllers:
+          enabled: false
+          run: []
+```
+
+. Redeploy your Redpanda resource:
++
+```bash
+kubectl apply -f redpanda-cluster.yaml --namespace <namespace>
+```
+
+--
+Helm::
++
+--
+If you enabled the controllers in the Redpanda Helm chart directly (rather than through the operator):
+
+[loweralpha]
+. Edit or remove the settings for the `controllers` sidecar in your Helm values or command-line overrides. For example, if you used a YAML values file:
++
+.`remove-controllers.yaml`
+[,yaml]
+----
+statefulset:
+  sideCars:
+    controllers:
+      enabled: false
+      run: []
+rbac:
+  enabled: false
+----
+
+. Run `helm upgrade` to apply the changes.
+
+--
+======
+
+. Decommission the Redpanda broker Pod running on the node you plan to upgrade. This process migrates its data and replicas to other brokers. See xref:manage:kubernetes/k-decommission-brokers.adoc[Decommission Brokers]. Wait for the process to complete before continuing.
+
+. If you use local PVs, delete the PersistentVolumeClaim (PVC) that's associated with the broker.
++
+[,bash]
+----
+kubectl get pvc --namespace <namespace>
+kubectl delete pvc <pvc-name> --namespace <namespace>
+----
++
+You must delete the associated PVC so that Kubernetes can re-provision storage for the rescheduled broker.
++
+NOTE: Deleting the PVC sets a `deletionTimestamp`, but the actual PVC removal won't happen until the Pod using it is terminated.
+
+. https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/[Cordon and drain the node^] so that no new Redpanda Pods are scheduled there and existing Redpanda Pods are gracefully evicted.
++
+[,bash]
+----
+kubectl get nodes -o wide
+kubectl cordon <node-name>
+kubectl drain <node-name>
+----
+
+. Upgrade the node.
++
+Below are links to documentation from major hosting platforms describing how to upgrade Kubernetes:
++
+--
+* https://cloud.google.com/kubernetes-engine/docs/how-to/upgrading-a-cluster[Upgrade on GKE (Google Kubernetes Engine)^]
+* https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html[Upgrade on EKS (Elastic Kubernetes Service)^]
+* https://learn.microsoft.com/en-us/azure/aks/upgrade-cluster?tabs=azure-cli[Upgrade on AKS (Azure Kubernetes Service)^]
+* https://kubernetes.io/docs/tasks/administer-cluster/cluster-upgrade/[Upgrade on Self-Managed^]
+--
++
+When the upgrade is complete, the node is rebooted or replaced.
+
+. Wait for the node to come back.
++
+[,bash]
+----
+kubectl wait --for=condition=Ready node/<node-name> --timeout=300s
+----
++
+When the node rejoins the cluster, Kubernetes can schedule a new broker Pod there. If you deleted the PVC, Kubernetes creates a new local PV to fulfill the storage requirement for the newly scheduled Pod.
+
+. If you disabled the NodeWatcher or Decommission controllers in step 3, re-enable them. For example, to re-enable both:
++
+[tabs]
+======
+Helm + Operator::
++
+--
+
+[,bash,subs="attributes+"]
+----
+helm upgrade --install redpanda-controller redpanda/operator \
+  --namespace <namespace> \
+  --set image.tag={latest-operator-version} \
+  --create-namespace \
+  --set additionalCmdFlags={--additional-controllers="nodeWatcher","decommission"} \
+----
+
+Or:
+
+.`redpanda-cluster.yaml`
+```yaml
+apiVersion: cluster.redpanda.com/v1alpha2
+kind: Redpanda
+metadata:
+  name: redpanda
+spec:
+  chartRef: {}
+  clusterSpec:
+    statefulset:
+      sideCars:
+        controllers:
+          enabled: true
+          run:
+            - "nodeWatcher"
+            - "decommission"
+```
+
+--
+Helm::
++
+--
+.`enable-controllers.yaml`
+[,yaml]
+----
+statefulset:
+  sideCars:
+    controllers:
+      enabled: true
+      run:
+        - "nodeWatcher"
+        - "decommission"
+----
+
+--
+======
+
+. Verify cluster health.
++
+Use your monitoring stack or `rpk cluster health` to verify that all brokers are online and that data replication is healthy.
+
+Because the data resides on ephemeral local disks, simply upgrading the node without decommissioning the broker or deleting PVCs can lead to data being “stuck” on that node or lost when the local disk is wiped. Ensuring a higher replication factor and decommissioning the broker moves your data to other nodes, so you can safely bring the node down and start fresh without losing or corrupting data.
+
+== After the upgrade
+
+After you have upgraded your Kubernetes cluster:
+
+* Verify that your Redpanda cluster remains healthy and that data has been retained as expected.
+* Confirm that all your brokers have rejoined the cluster and that there are no under-replicated partitions.
 
 include::shared:partial$suggested-reading.adoc[]
 
 * https://kubernetes.io/docs/concepts/workloads/pods/disruptions/[Kubernetes Pod Disruption Budgets^]
 * https://helm.sh/docs/[Helm documentation^]
-* xref:manage:kubernetes/k-decommission-brokers.adoc[Decommission brokers]
+* xref:manage:kubernetes/k-decommission-brokers.adoc[Decommission Brokers]
 * xref:reference:rpk/rpk-topic/rpk-topic-alter-config.adoc[`rpk topic alter-config`]
