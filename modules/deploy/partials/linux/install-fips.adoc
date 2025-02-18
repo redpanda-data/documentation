@@ -18,6 +18,11 @@ To run Redpanda in FIPS compliance mode, you must install the `redpanda-fips` pa
 
 - Contains a version of `rpk` built with the https://github.com/microsoft/go[Microsoft GoLang compiler^] and https://github.com/microsoft/go-crypto-openssl[Microsoft’s Go Crypto OpenSSL package^] to which `rpk` is linked, and uses the FIPS-approved version of OpenSSL.
 
+[tabs]
+=====
+RHEL::
++
+--
 To install Redpanda for FIPS compliance, run:
 
 [,bash]
@@ -31,7 +36,30 @@ If you wish to only use `rpk` on a FIPS host, run:
 
 [,bash]
 ----
+sudo yum install repdanda-fips redpanda-rpk-fips
+----
+
+--
+Debian/Ubuntu::
++
+--
+To install Redpanda for FIPS compliance, run:
+
+[,bash]
+----
+sudo apt install redpanda-rpk-fips redpanda-fips
+----
+
+NOTE: Alternatively, you could run `sudo install redpanda-fips`, which also picks up and includes the `redpanda` install package.
+
+If you wish to only use `rpk` on a FIPS host, run:
+
+[,bash]
+----
 sudo apt install -y redpanda-rpk-fips
 ----
+
+--
+=====
 
 See also: xref:manage:security/fips-compliance.adoc[Configure Redpanda for FIPS] 
